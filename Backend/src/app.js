@@ -1,13 +1,25 @@
 import express from "express";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+app.use(cookieParser());
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true, limit: "16kb" }));
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN,
+    credentials: true,
+  })
+);
 
-app.listen(PORT, () => {
-  console.log("Server is running on localhost:" + PORT);
-});
+//routes import
+import userRouter from "./routes/user.routes.js";
+
+//routes declaration
+app.use("/api/v1/users", userRouter);
+
+export { app };

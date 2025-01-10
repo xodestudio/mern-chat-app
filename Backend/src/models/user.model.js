@@ -1,37 +1,37 @@
 import mongoose from "mongoose";
 
-const userSchema = new Schema(
+const userSchema = new mongoose.Schema(
   {
-    firstName: {
+    fullName: {
       type: String,
       required: true,
     },
-    lastName: {
+    username: {
       type: String,
       required: true,
-    },
-    age: {
-      type: Number,
-      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
     },
     gender: {
       type: String,
       enum: ["male", "female", "others"],
       required: true,
     },
-    email: {
+    age: {
+      type: Number,
+      required: [true, "Age is required"],
+      min: [1, "Age must be a positive number"],
+    },
+    avatar: {
       type: String,
       required: true,
-      unique: true,
     },
     password: {
       type: String,
       required: true,
     },
-    confirmPassword: {
-      type: String,
-      required: true,
-    }
   },
   {
     timestamps: true,
