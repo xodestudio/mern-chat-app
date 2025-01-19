@@ -31,6 +31,8 @@ const registerUser = asyncHandler(async (req, res) => {
   const { fullName, username, gender, age, password, confirmPassword } =
     req.body;
 
+  console.log(req.body);
+
   if (
     !fullName ||
     !username ||
