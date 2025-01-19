@@ -3,7 +3,9 @@ import '@fontsource/poppins';
 import { RiMailFill, RiLock2Fill, RiUser3Fill } from 'react-icons/ri';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import axios from 'axios';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 const Signup = () => {
   const [user, setUser] = useState({
@@ -20,7 +22,8 @@ const Signup = () => {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const avatarInputRef = useRef(null); // File input reset karne ke liye ref
+  const avatarInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const togglePassword = () => {
     setShowPassword(!showPassword);
@@ -41,7 +44,7 @@ const Signup = () => {
 
   const showToast = (message, type) => {
     setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
+    setTimeout(() => setToast(null), 2000);
   };
 
   const handleSubmit = async e => {
@@ -97,6 +100,8 @@ const Signup = () => {
       if (avatarInputRef.current) {
         avatarInputRef.current.value = '';
       }
+
+      navigate('/login');
     } catch (error) {
       console.error(error);
       showToast(error.response?.data?.message || 'Something went wrong!', 'error');
@@ -260,23 +265,28 @@ const Signup = () => {
               )}
             </div>
           </div>
-        </div>
 
-        <button
-          type='submit'
-          disabled={loading}
-          className='w-full py-3 bg-blue-600 text-white rounded-full font-medium mt-6 hover:bg-blue-500 transition duration-300'
-        >
-          {loading ? 'Submitting...' : 'Register'}
-        </button>
+          <div className='flex items-center justify-center'>
+            <button
+              type='submit'
+              disabled={loading}
+              className='bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition duration-300 w-full'
+            >
+              {loading ? 'Signing Up...' : 'Sign Up'}
+            </button>
+          </div>
 
-        <div className='flex justify-center gap-1 text-center text-sm mt-4 text-white'>
-          Already have an account?
-          <Link to='/login' className='font-medium hover:underline'>
-            Login
-          </Link>
+          <div className='text-center'>
+            <p className='text-white'>
+              Already have an account?{' '}
+              <Link to='/login' className='text-blue-500'>
+                Login
+              </Link>
+            </p>
+          </div>
         </div>
       </form>
+      <ToastContainer />
     </div>
   );
 };

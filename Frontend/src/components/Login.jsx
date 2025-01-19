@@ -7,6 +7,8 @@ import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import { useNavigate, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
+import { useDispatch } from 'react-redux';
+import { setAuthUser } from '../redux/features/userSlice';
 
 const Login = () => {
   const [user, setUser] = useState({
@@ -18,6 +20,7 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const savedUser = JSON.parse(localStorage.getItem('user'));
@@ -49,10 +52,14 @@ const Login = () => {
 
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8000/api/v1/users/login', {
-        username: user.username,
-        password: user.password
-      });
+      const response = await axios.post(
+        'http://localhost:8000/api/v1/users/login',
+        {
+          username: user.username,
+          password: user.password
+        },
+        { withCredentials: true }
+      );
 
       showToast(response.data.message || 'Login successful!', 'success');
       setUser({ username: '', password: '' });
@@ -64,6 +71,8 @@ const Login = () => {
       }
 
       navigate('/');
+
+      dispatch(setAuthUser(response.data));
     } catch (error) {
       console.error(error);
       showToast(error?.response?.data?.message || 'Something went wrong!', 'error');
