@@ -212,7 +212,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const getOtherUsers = asyncHandler(async (req, res) => {
   const currentLoggedInUser = req.user._id;
 
-  const otherUsers = await User.findOne({
+  const otherUsers = await User.find({
     _id: {
       $ne: currentLoggedInUser,
     },
