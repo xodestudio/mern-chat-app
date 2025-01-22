@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AiOutlineSearch,
   AiOutlineVideoCamera,
@@ -13,9 +13,23 @@ import useGetOtherUsers from '../hooks/useGetOtherUsers';
 import { useSelector } from 'react-redux';
 
 const Dashboard = () => {
+  const [isTyping, setIsTyping] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { otherUsers } = useSelector(store => store.user);
+
   useGetOtherUsers();
 
-  const { otherUsers } = useSelector(store => store.user);
+  const handleSearch = e => {
+    setSearchQuery(e.target.value);
+  };
+
+  useEffect(() => {
+    if (searchQuery) {
+      setIsTyping(true);
+    } else {
+      setIsTyping(false);
+    }
+  }, [searchQuery]);
 
   return (
     <div className='h-screen flex bg-gray-900 text-white font-sans'>
@@ -32,6 +46,8 @@ const Dashboard = () => {
             <AiOutlineSearch className='text-gray-400 text-xl' />
             <input
               type='text'
+              value={searchQuery}
+              onChange={handleSearch}
               placeholder='Search Messenger'
               className='bg-transparent text-base text-gray-200 ml-3 w-full focus:outline-none'
             />
@@ -45,37 +61,42 @@ const Dashboard = () => {
             <img
               src='https://randomuser.me/api/portraits/women/1.jpg'
               alt='Anna'
-              className='w-10 h-10 rounded-full border-2 border-blue-500'
+              className='w-12 h-12 rounded-full border-2 border-blue-500'
+              loading='lazy'
             />
             <img
               src='https://randomuser.me/api/portraits/men/2.jpg'
               alt='Jeff'
-              className='w-10 h-10 rounded-full border-2 border-gray-500'
+              className='w-12 h-12 rounded-full border-2 border-gray-500'
+              loading='lazy'
             />
             <img
               src='https://randomuser.me/api/portraits/women/3.jpg'
               alt='Cathy'
-              className='w-10 h-10 rounded-full border-2 border-green-500'
+              className='w-12 h-12 rounded-full border-2 border-green-500'
+              loading='lazy'
             />
           </div>
         </div>
 
         {/* Chat List */}
-        <div className='overflow-y-auto'>
-          {otherUsers.map(user => (
-            <div
-              key={user._id}
-              className='p-4 flex items-center space-x-3 hover:bg-gray-700 cursor-pointer'
-            >
-              <div className='relative'>
-                <img src={user.avatar} alt='Avatar' className='w-12 h-12 rounded-full' />
+        <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900'>
+          {otherUsers
+            .filter(user => user.username.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map(user => (
+              <div
+                key={user._id}
+                className='p-4 flex items-center space-x-3 hover:bg-gray-700 cursor-pointer'
+              >
+                <div className='relative'>
+                  <img src={user.avatar} alt='Avatar' className='w-12 h-12 rounded-full' />
+                </div>
+                <div>
+                  <h2 className='text-base font-semibold'>{user.username}</h2>
+                  <p className='text-sm text-gray-400'>Hey, Are you there? 10min</p>
+                </div>
               </div>
-              <div>
-                <h2 className='text-base font-semibold'>{user.username}</h2>
-                <p className='text-sm text-gray-400'>Hey, Are you there? 10min</p>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
       </aside>
 
@@ -84,7 +105,7 @@ const Dashboard = () => {
         {/* Header */}
         <div className='p-4 flex items-center justify-between border-b border-gray-700'>
           <div className='flex items-center space-x-3'>
-            <img src={otherUsers[0]?.avatar} alt='Avatar' className='w-10 h-10 rounded-full' />
+            <img src={otherUsers[0]?.avatar} alt='Avatar' className='w-12 h-12 rounded-full' />
             <div>
               <h2 className='text-base font-semibold'>{otherUsers[0]?.username}</h2>
               <p className='text-sm text-gray-400'>Active 1h ago</p>
@@ -116,6 +137,12 @@ const Dashboard = () => {
               Yes, that sounds amazing!
             </div>
           </div>
+
+          {isTyping && (
+            <div className='text-sm text-gray-400'>
+              <span>Typing...</span>
+            </div>
+          )}
         </div>
 
         {/* Input */}
@@ -127,6 +154,7 @@ const Dashboard = () => {
             type='text'
             placeholder='Type a message...'
             className='flex-1 bg-gray-800 text-base px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500'
+            onChange={e => setIsTyping(e.target.value.length > 0)}
           />
           <FiSend className='text-2xl cursor-pointer text-blue-500' />
         </div>
