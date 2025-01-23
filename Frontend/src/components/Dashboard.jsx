@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   AiOutlineSearch,
   AiOutlineVideoCamera,
@@ -6,30 +6,19 @@ import {
   AiOutlineInfoCircle
 } from 'react-icons/ai';
 import { FaMicrophone, FaImage } from 'react-icons/fa';
-import { BsThreeDots, BsFillCircleFill, BsPaperclip } from 'react-icons/bs';
+import { BsThreeDots, BsPaperclip } from 'react-icons/bs';
 import { FiSend } from 'react-icons/fi';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import useGetOtherUsers from '../hooks/useGetOtherUsers';
 import { useSelector } from 'react-redux';
+import Profile from './Profile';
 
 const Dashboard = () => {
   const [isTyping, setIsTyping] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [showProfile, setShowProfile] = useState(false); // State to toggle Profile component
   const { otherUsers } = useSelector(store => store.user);
 
   useGetOtherUsers();
-
-  const handleSearch = e => {
-    setSearchQuery(e.target.value);
-  };
-
-  useEffect(() => {
-    if (searchQuery) {
-      setIsTyping(true);
-    } else {
-      setIsTyping(false);
-    }
-  }, [searchQuery]);
 
   return (
     <div className='h-screen flex bg-gray-900 text-white font-sans'>
@@ -38,20 +27,6 @@ const Dashboard = () => {
         <div className='p-4 flex justify-between items-center border-b border-gray-700'>
           <h1 className='text-2xl font-semibold'>Messenger</h1>
           <BsThreeDots className='text-xl cursor-pointer' />
-        </div>
-
-        {/* Search Bar */}
-        <div className='p-4'>
-          <div className='flex items-center bg-gray-700 px-3 py-2 rounded-lg'>
-            <AiOutlineSearch className='text-gray-400 text-xl' />
-            <input
-              type='text'
-              value={searchQuery}
-              onChange={handleSearch}
-              placeholder='Search Messenger'
-              className='bg-transparent text-base text-gray-200 ml-3 w-full focus:outline-none'
-            />
-          </div>
         </div>
 
         {/* Stories Section */}
@@ -81,22 +56,20 @@ const Dashboard = () => {
 
         {/* Chat List */}
         <div className='overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900'>
-          {otherUsers
-            .filter(user => user.username.toLowerCase().includes(searchQuery.toLowerCase()))
-            .map(user => (
-              <div
-                key={user._id}
-                className='p-4 flex items-center space-x-3 hover:bg-gray-700 cursor-pointer'
-              >
-                <div className='relative'>
-                  <img src={user.avatar} alt='Avatar' className='w-12 h-12 rounded-full' />
-                </div>
-                <div>
-                  <h2 className='text-base font-semibold'>{user.username}</h2>
-                  <p className='text-sm text-gray-400'>Hey, Are you there? 10min</p>
-                </div>
+          {otherUsers.map(user => (
+            <div
+              key={user._id}
+              className='p-4 flex items-center space-x-3 hover:bg-gray-700 cursor-pointer'
+            >
+              <div className='relative'>
+                <img src={user.avatar} alt='Avatar' className='w-12 h-12 rounded-full' />
               </div>
-            ))}
+              <div>
+                <h2 className='text-base font-semibold'>{user.username}</h2>
+                <p className='text-sm text-gray-400'>Hey, Are you there? 10min</p>
+              </div>
+            </div>
+          ))}
         </div>
       </aside>
 
@@ -114,34 +87,43 @@ const Dashboard = () => {
           <div className='flex items-center space-x-3'>
             <AiOutlineVideoCamera className='text-2xl cursor-pointer' />
             <AiOutlinePhone className='text-2xl cursor-pointer' />
-            <AiOutlineInfoCircle className='text-2xl cursor-pointer' />
+            <AiOutlineInfoCircle
+              className='text-2xl cursor-pointer'
+              onClick={() => setShowProfile(!showProfile)} // Toggle Profile component
+            />
           </div>
         </div>
 
-        {/* Messages */}
+        {/* Main Content */}
         <div className='flex-1 overflow-y-auto p-4 space-y-3'>
-          <div className='flex flex-col items-start'>
-            <div className='bg-gray-700 text-sm px-4 py-2 rounded-lg max-w-xs'>
-              Hey! How are you?
-            </div>
-            <div className='bg-gray-700 text-sm px-4 py-2 rounded-lg max-w-xs mt-1'>
-              Shall we go for Hiking this weekend?
-            </div>
-          </div>
+          {showProfile ? (
+            <Profile setShowProfile={setShowProfile} /> // Render Profile component
+          ) : (
+            <>
+              <div className='flex flex-col items-start'>
+                <div className='bg-gray-700 text-sm px-4 py-2 rounded-lg max-w-xs'>
+                  Hey! How are you?
+                </div>
+                <div className='bg-gray-700 text-sm px-4 py-2 rounded-lg max-w-xs mt-1'>
+                  Shall we go for Hiking this weekend?
+                </div>
+              </div>
 
-          <div className='flex flex-col items-end'>
-            <div className='bg-blue-600 text-sm px-4 py-2 rounded-lg max-w-xs'>
-              I’m doing great! What about you?
-            </div>
-            <div className='bg-blue-600 text-sm px-4 py-2 rounded-lg max-w-xs mt-1'>
-              Yes, that sounds amazing!
-            </div>
-          </div>
+              <div className='flex flex-col items-end'>
+                <div className='bg-blue-600 text-sm px-4 py-2 rounded-lg max-w-xs'>
+                  I’m doing great! What about you?
+                </div>
+                <div className='bg-blue-600 text-sm px-4 py-2 rounded-lg max-w-xs mt-1'>
+                  Yes, that sounds amazing!
+                </div>
+              </div>
 
-          {isTyping && (
-            <div className='text-sm text-gray-400'>
-              <span>Typing...</span>
-            </div>
+              {isTyping && (
+                <div className='text-sm text-gray-400'>
+                  <span>Typing...</span>
+                </div>
+              )}
+            </>
           )}
         </div>
 
