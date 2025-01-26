@@ -2,142 +2,210 @@ import React, { useState } from 'react';
 import {
   FaUserEdit,
   FaKey,
-  FaFileAlt,
-  FaCreditCard,
   FaBell,
   FaQuestionCircle,
   FaSignOutAlt,
   FaChevronRight,
-  FaLanguage
+  FaTimes,
+  FaLock,
+  FaPalette,
+  FaMoon,
+  FaSun,
+  FaCreditCard,
+  FaLanguage,
+  FaCog,
+  FaShieldAlt,
+  FaEnvelope,
+  FaUserShield,
+  FaHistory,
+  FaInfoCircle
 } from 'react-icons/fa';
 
-const Profile = () => {
+const Profile = ({ onClose }) => {
   const [selectedLanguage, setSelectedLanguage] = useState('English');
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const handleLanguageChange = language => {
     setSelectedLanguage(language);
     setDropdownOpen(false); // Close dropdown after selection
   };
 
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  const toggleNotifications = () => {
+    setNotificationsEnabled(!notificationsEnabled);
+  };
+
   return (
-    <div
-      className='fixed top-0 right-0 h-full bg-white shadow-xl transform transition-transform duration-300 ease-in-out translate-x-0'
-      style={{ width: '400px' }}
-    >
-      <div className='p-6 pt-4'>
-        {/* Profile Header with Cover Image */}
-        <div
-          className='relative mb-4 w-full h-40 rounded-lg overflow-hidden bg-cover bg-center'
-          style={{
-            backgroundImage:
-              'url(https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0OqeAjbgKArlQv8CCghUa7GabClPUk3WKPeSGB0ywd3aos8JhHxIscPE&s)'
-          }}
+    <div className='h-full w-full bg-gray-900/90 backdrop-blur-lg p-6 overflow-y-auto animate-slideIn'>
+      {/* Profile Header with Cover Image */}
+      <div
+        className='relative mb-8 w-full h-64 rounded-lg overflow-hidden bg-cover bg-center shadow-lg animate-fadeIn'
+        style={{
+          backgroundImage:
+            'url(https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80)'
+        }}
+      >
+        {/* Close Icon - Positioned at the top-right corner of the cover photo */}
+        <button
+          onClick={onClose}
+          className='absolute top-4 right-4 text-gray-300 hover:text-white transition-colors animate-fadeIn bg-gray-800/50 rounded-full p-2'
         >
-          {/* Profile Image */}
-          <div className='absolute bottom-0 left-4 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg'>
-            <img
-              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT0OqeAjbgKArlQv8CCghUa7GabClPUk3WKPeSGB0ywd3aos8JhHxIscPE&s'
-              alt='Profile'
-              className='w-full h-full object-cover'
-            />
+          <FaTimes className='text-2xl' />
+        </button>
+
+        {/* Profile Image - Adjusted position to avoid being cut off */}
+        <div className='absolute -bottom-0 left-6 w-28 h-28 rounded-full overflow-hidden border-4 border-white/80 shadow-lg bg-white'>
+          <img
+            src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
+            alt='Profile'
+            className='w-full h-full object-cover'
+          />
+        </div>
+      </div>
+
+      {/* Name and Email */}
+      <div className='mt-20 mb-8 animate-fadeIn'>
+        <h2 className='text-3xl font-bold text-white'>Scarlett Davis</h2>
+        <p className='text-lg text-gray-300'>scarlettdavis@gmail.com</p>
+      </div>
+
+      {/* Grid Layout for Buttons */}
+      <div className='grid grid-cols-1 sm:grid-cols-2 gap-5 animate-fadeIn'>
+        {/* Edit Profile */}
+        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaUserEdit className='text-blue-400 text-2xl' />
           </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Edit Profile</span>
+            <p className='text-sm text-gray-300'>Update your personal information</p>
+          </div>
+          <FaChevronRight className='ml-auto text-gray-400 text-xl' />
         </div>
 
-        {/* Name and Email */}
-        <div className='text-center mb-6'>
-          <h2 className='text-2xl font-semibold text-gray-800'>Scarlett Davis</h2>
-          <p className='text-md text-gray-500'>scarlettdavis@gmail.com</p>
+        {/* Privacy Settings */}
+        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaLock className='text-blue-400 text-2xl' />
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Privacy Settings</span>
+            <p className='text-sm text-gray-300'>Manage your privacy preferences</p>
+          </div>
+          <FaChevronRight className='ml-auto text-gray-400 text-xl' />
         </div>
 
-        {/* General Section */}
-        <div className='mb-6'>
-          <h3 className='text-lg font-semibold text-gray-800 mb-4'>General</h3>
-          <div className='space-y-4'>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaUserEdit className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>Edit Profile</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
-            </div>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaKey className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>Change Password</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
-            </div>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaFileAlt className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>Terms of Use</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
-            </div>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaCreditCard className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>Add Card</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
-            </div>
-
-            {/* Custom Styled Language Dropdown */}
-            <div className='relative'>
-              <label htmlFor='language' className='block text-sm font-medium text-gray-700 mb-2'>
-                Language
-              </label>
+        {/* Dark Mode Toggle */}
+        <div
+          className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+          onClick={toggleDarkMode}
+        >
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            {darkMode ? (
+              <FaMoon className='text-blue-400 text-2xl' />
+            ) : (
+              <FaSun className='text-blue-400 text-2xl' />
+            )}
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>
+              {darkMode ? 'Dark Mode' : 'Light Mode'}
+            </span>
+            <p className='text-sm text-gray-300'>Switch between dark and light themes</p>
+          </div>
+          <div className='ml-auto'>
+            <div
+              className={`w-12 h-6 flex items-center rounded-full p-1 ${
+                darkMode ? 'bg-blue-500' : 'bg-gray-500'
+              }`}
+            >
               <div
-                className='relative w-full cursor-pointer'
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-              >
-                <div className='flex justify-between items-center bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-lg shadow-sm hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-200'>
-                  <div className='flex items-center space-x-2'>
-                    <FaLanguage className='text-blue-500 text-xl' />
-                    <span className='text-sm font-medium text-gray-700'>{selectedLanguage}</span>
-                  </div>
-                  <FaChevronRight className='text-gray-400' />
-                </div>
-                {dropdownOpen && (
-                  <div className='absolute right-0 mt-2 w-full bg-white shadow-lg rounded-md border border-gray-200 z-10'>
-                    <div
-                      onClick={() => handleLanguageChange('English')}
-                      className='cursor-pointer p-3 hover:bg-gray-100 flex items-center space-x-2'
-                    >
-                      <span>English</span>
-                    </div>
-                    <div
-                      onClick={() => handleLanguageChange('Urdu')}
-                      className='cursor-pointer p-3 hover:bg-gray-100 flex items-center space-x-2'
-                    >
-                      <span>Urdu</span>
-                    </div>
-                    <div
-                      onClick={() => handleLanguageChange('Spanish')}
-                      className='cursor-pointer p-3 hover:bg-gray-100 flex items-center space-x-2'
-                    >
-                      <span>Spanish</span>
-                    </div>
-                  </div>
-                )}
-              </div>
+                className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
+                  darkMode ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              ></div>
             </div>
           </div>
         </div>
 
-        {/* Preferences Section */}
-        <div>
-          <h3 className='text-lg font-semibold text-gray-800 mb-4'>Preferences</h3>
-          <div className='space-y-4'>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaBell className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>Notification</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
-            </div>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaQuestionCircle className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>FAQ</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
-            </div>
-            <div className='flex items-center p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg shadow-sm cursor-pointer hover:bg-gradient-to-l hover:from-gray-200 hover:to-gray-300 transition duration-300'>
-              <FaSignOutAlt className='text-blue-500 text-xl mr-4' />
-              <span className='text-sm font-medium text-gray-700'>Logout</span>
-              <FaChevronRight className='ml-auto text-gray-400' />
+        {/* Notifications Toggle */}
+        <div
+          className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+          onClick={toggleNotifications}
+        >
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaBell className='text-blue-400 text-2xl' />
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Notifications</span>
+            <p className='text-sm text-gray-300'>Manage your notification preferences</p>
+          </div>
+          <div className='ml-auto'>
+            <div
+              className={`w-12 h-6 flex items-center rounded-full p-1 ${
+                notificationsEnabled ? 'bg-blue-500' : 'bg-gray-500'
+              }`}
+            >
+              <div
+                className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
+                  notificationsEnabled ? 'translate-x-6' : 'translate-x-0'
+                }`}
+              ></div>
             </div>
           </div>
+        </div>
+
+        {/* Payment Methods */}
+        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaCreditCard className='text-blue-400 text-2xl' />
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Payment Methods</span>
+            <p className='text-sm text-gray-300'>Manage your payment options</p>
+          </div>
+          <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+        </div>
+
+        {/* Language Settings */}
+        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaLanguage className='text-blue-400 text-2xl' />
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Language Settings</span>
+            <p className='text-sm text-gray-300'>Change your preferred language</p>
+          </div>
+          <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+        </div>
+
+        {/* Help & Support */}
+        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaInfoCircle className='text-blue-400 text-2xl' />
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Help & Support</span>
+            <p className='text-sm text-gray-300'>Get assistance and support</p>
+          </div>
+          <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+        </div>
+
+        {/* Logout */}
+        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+          <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
+            <FaSignOutAlt className='text-blue-400 text-2xl' />
+          </div>
+          <div className='ml-4'>
+            <span className='text-lg font-semibold text-white'>Logout</span>
+            <p className='text-sm text-gray-300'>Sign out of your account</p>
+          </div>
+          <FaChevronRight className='ml-auto text-gray-400 text-xl' />
         </div>
       </div>
     </div>
