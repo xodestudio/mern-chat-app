@@ -1,36 +1,21 @@
 import React, { useState } from 'react';
 import {
   FaUserEdit,
-  FaKey,
   FaBell,
-  FaQuestionCircle,
   FaSignOutAlt,
   FaChevronRight,
   FaTimes,
   FaLock,
-  FaPalette,
   FaMoon,
   FaSun,
   FaCreditCard,
   FaLanguage,
-  FaCog,
-  FaShieldAlt,
-  FaEnvelope,
-  FaUserShield,
-  FaHistory,
   FaInfoCircle
 } from 'react-icons/fa';
 
 const Profile = ({ onClose }) => {
-  const [selectedLanguage, setSelectedLanguage] = useState('English');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
-
-  const handleLanguageChange = language => {
-    setSelectedLanguage(language);
-    setDropdownOpen(false); // Close dropdown after selection
-  };
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
@@ -63,7 +48,7 @@ const Profile = ({ onClose }) => {
           <img
             src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80'
             alt='Profile'
-            className='w-full h-full object-cover'
+            className='w-full h-full object-cover object-top'
           />
         </div>
       </div>
