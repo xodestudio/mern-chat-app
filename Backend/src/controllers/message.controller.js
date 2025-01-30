@@ -63,7 +63,7 @@ const getMessage = asyncHandler(async (req, res) => {
   }
 
   const conversation = await Conversation.findOne({
-    $all: [senderId, receiverId],
+    participants: { $all: [senderId, receiverId] },
   }).populate("messages");
 
   if (!conversation) {

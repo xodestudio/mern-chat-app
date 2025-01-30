@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AiOutlineVideoCamera, AiOutlinePhone, AiOutlineInfoCircle } from 'react-icons/ai';
 import { FaMicrophone, FaImage } from 'react-icons/fa';
 import { BsThreeDots, BsPaperclip } from 'react-icons/bs';
@@ -6,8 +6,9 @@ import { FiSend } from 'react-icons/fi';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import useGetOtherUsers from '../hooks/useGetOtherUsers';
 import { useDispatch, useSelector } from 'react-redux';
-import { setSelectedUsers } from '../redux/features/userSlice';
+import { setSelectedUsers } from '../redux/features/userSlice.js';
 import Profile from './Profile';
+import useGetMessages from '../hooks/useGetMessages.jsx';
 
 const Dashboard = () => {
   const [isTyping, setIsTyping] = useState(false);
@@ -15,11 +16,14 @@ const Dashboard = () => {
   const { otherUsers } = useSelector(store => store.user);
 
   const dispatch = useDispatch();
+  const { selectedUsers } = useSelector(store => store.user);
+  const { messages } = useSelector(store => store.message);
+  // if (!messages) return null;
 
+  useGetMessages();
   useGetOtherUsers();
 
   const selectedUserHandler = user => {
-    console.log(user);
     dispatch(setSelectedUsers(user));
   };
 
@@ -59,7 +63,9 @@ const Dashboard = () => {
               <div
                 key={user._id}
                 onClick={() => selectedUserHandler(user)}
-                className='p-3 md:p-4 flex items-center space-x-3 md:space-x-4 hover:bg-gray-700 cursor-pointer transition-colors duration-200'
+                className={`p-3 md:p-4 flex items-center space-x-3 md:space-x-4 hover:bg-gray-700 cursor-pointer transition-colors duration-200 ${
+                  selectedUsers?._id === user._id ? 'bg-gray-700' : ''
+                }`}
               >
                 <div className='relative'>
                   <img
@@ -112,12 +118,15 @@ const Dashboard = () => {
             <div className='flex-1 overflow-y-auto p-4 md:p-6 bg-gray-900'>
               {/* Chat Messages */}
               <div className='flex flex-col items-start space-y-2 md:space-y-3'>
-                <div className='bg-gray-700 text-sm md:text-base px-4 py-2 md:px-5 md:py-3 rounded-lg max-w-xs md:max-w-md'>
-                  Hey! How are you?
-                </div>
-                <div className='bg-gray-700 text-sm md:text-base px-4 py-2 md:px-5 md:py-3 rounded-lg max-w-xs md:max-w-md'>
-                  Shall we go for Hiking this weekend?
-                </div>
+                {messages?.map((message, index) => (
+                  <div
+                    key={index}
+                    className='bg-gray-700 text-sm md:text-base px-4 py-2 md:px-5 md:py-3 rounded-lg max-w-xs md:max-w-md'
+                  >
+                    {console.log('messages', messages)}
+                    {message?.message || 'No message available'}
+                  </div>
+                ))}
               </div>
 
               <div className='flex flex-col items-end space-y-2 md:space-y-3 mt-4'>
