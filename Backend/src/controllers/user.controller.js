@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadImage, cropImage } from "../utils/cloudinary.js";
+import { io, userSocketMap } from "../socket/socket.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -114,9 +115,9 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   const options = {
-    httpOnly: true,
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
   };
 
   return res
@@ -152,7 +153,15 @@ const logoutUser = asyncHandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
+    sameSite: "none",
   };
+
+  const userId = req.user._id.toString();
+  if (userSocketMap[userId]) {
+    const socketId = userSocketMap[userId];
+    io.sockets.sockets.get(socketId)?.disconnect(true);
+    delete userSocketMap[userId];
+  }
 
   return res
     .status(200)

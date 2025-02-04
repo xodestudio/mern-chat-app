@@ -12,9 +12,14 @@ import {
   FaLanguage,
   FaInfoCircle
 } from 'react-icons/fa';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import Cookies from 'js-cookie';
 
 const Profile = ({ onClose }) => {
   const [darkMode, setDarkMode] = useState(false);
+  const [toast, setToast] = useState({ message: '', type: '', visible: false });
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const toggleDarkMode = () => {
@@ -23,6 +28,49 @@ const Profile = ({ onClose }) => {
 
   const toggleNotifications = () => {
     setNotificationsEnabled(!notificationsEnabled);
+  };
+
+  const navigate = useNavigate();
+
+  const showToast = (message, type) => {
+    setToast({ message, type, visible: true });
+    setTimeout(() => setToast({ message: '', type: '', visible: false }), 3000);
+  };
+
+  const handleLogout = async () => {
+    try {
+      const token = Cookies.get('accessToken');
+
+      if (!token) {
+        showToast('User not logged in!', 'error');
+        return;
+      }
+
+      const response = await axios.post(
+        'http://localhost:8000/api/v1/users/logout',
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          },
+          withCredentials: true
+        }
+      );
+
+      if (response.status === 200) {
+        Cookies.remove('accessToken');
+        Cookies.remove('refreshToken');
+
+        showToast('Logged out successful!', 'success');
+
+        navigate('/login');
+      } else {
+        throw new Error('Logout failed, please try again.');
+      }
+    } catch (error) {
+      console.error('Logout Error:', error);
+      showToast('Something went wrong!', 'error');
+    }
   };
 
   return (
@@ -52,6 +100,81 @@ const Profile = ({ onClose }) => {
           />
         </div>
       </div>
+
+      {/* Custom Toast */}
+      {toast.visible && (
+        <div
+          className={`fixed top-4 right-4 p-4 rounded-xl
+            backdrop-blur-lg bg-opacity-90 shadow-2xl
+            ${
+              toast.type === 'error'
+                ? 'bg-red-500/80 border-red-400'
+                : 'bg-green-500/80 border-green-400'
+            }
+            border-2 text-white
+            transform transition-all duration-500
+            hover:translate-y-1 hover:shadow-lg
+            flex items-center gap-4 min-w-[350px]
+            animate-[slideInBounce_0.5s_ease-out]
+            overflow-hidden
+            ${toast.type === 'error' ? 'shadow-red-500/30' : 'shadow-green-500/30'}`}
+        >
+          {/* Progress Bar */}
+          <div className='absolute bottom-0 left-0 h-1 bg-white/30 w-full'>
+            <div className='h-full bg-white/60 animate-[progress_3s_linear]' />
+          </div>
+
+          {/* Icon */}
+          <div
+            className={`rounded-full p-2 
+            ${toast.type === 'error' ? 'bg-red-600/50' : 'bg-green-600/50'}`}
+          >
+            {toast.type === 'error' ? (
+              <svg className='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M6 18L18 6M6 6l12 12'
+                />
+              </svg>
+            ) : (
+              <svg className='w-6 h-6' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  strokeWidth={2}
+                  d='M5 13l4 4L19 7'
+                />
+              </svg>
+            )}
+          </div>
+
+          {/* Content */}
+          <div className='flex-1'>
+            <h4 className='font-bold text-lg tracking-wide'>
+              {toast.type === 'error' ? 'Error' : 'Success'}
+            </h4>
+            <p className='text-sm text-white/90'>{toast.message}</p>
+          </div>
+
+          {/* Close Button */}
+          <button
+            onClick={() => setToast(prev => ({ ...prev, visible: false }))}
+            className='rounded-full p-1 hover:bg-white/20 
+              transition-colors duration-200'
+          >
+            <svg className='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+              <path
+                strokeLinecap='round'
+                strokeLinejoin='round'
+                strokeWidth={2}
+                d='M6 18L18 6M6 6l12 12'
+              />
+            </svg>
+          </button>
+        </div>
+      )}
 
       {/* Name and Email */}
       <div className='mt-20 mb-8 animate-fadeIn'>
@@ -182,7 +305,10 @@ const Profile = ({ onClose }) => {
         </div>
 
         {/* Logout */}
-        <div className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'>
+        <div
+          className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+          onClick={handleLogout}
+        >
           <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
             <FaSignOutAlt className='text-blue-400 text-2xl' />
           </div>
@@ -193,6 +319,7 @@ const Profile = ({ onClose }) => {
           <FaChevronRight className='ml-auto text-gray-400 text-xl' />
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

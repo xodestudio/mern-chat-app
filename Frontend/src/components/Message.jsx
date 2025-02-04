@@ -1,16 +1,6 @@
-import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { setSelectedUsers } from '../redux/features/userSlice';
+import React from 'react';
 
 const Message = ({ message, isLoggedInUser, senderAvatar }) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    return () => {
-      dispatch(setSelectedUsers(null));
-    };
-  }, []);
-
   return (
     <div className={`flex ${isLoggedInUser ? 'justify-end' : 'justify-start'} space-x-2 mb-4`}>
       {/* Sender's Profile Photo (Only for other users) */}

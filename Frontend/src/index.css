@@ -2,28 +2,108 @@
 @tailwind components;
 @tailwind utilities;
 
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 /* Modern Custom Scrollbar */
 .modern-scrollbar::-webkit-scrollbar {
-  width: 10px; /* Scrollbar width */
+  width: 10px;
 }
 
+/* Scrollbar Track */
 .modern-scrollbar::-webkit-scrollbar-track {
-  background: linear-gradient(180deg, #1f2937, #111827); /* Gradient track */
+  background: linear-gradient(180deg, #1f2937, #111827);
   border-radius: 10px;
 }
 
+/* Scrollbar Thumb */
 .modern-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b82f6, #2563eb); /* Gradient thumb */
+  background: linear-gradient(180deg, #3b82f6, #2563eb); 
   border-radius: 10px;
-  border: 2px solid #1f2937; /* Border to make it pop */
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3); /* Inner shadow */
-  transition: background 0.3s ease; /* Smooth transition */
+  border: 2px solid #1f2937;
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  transition: background 0.3s ease;
+  height: 50px;
 }
 
+/* Thumb Hover */
 .modern-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #60a5fa, #3b82f6); /* Gradient on hover */
+  background: linear-gradient(180deg, #60a5fa, #3b82f6);
 }
 
+/* Thumb Active */
 .modern-scrollbar::-webkit-scrollbar-thumb:active {
-  background: linear-gradient(180deg, #2563eb, #1d4ed8); /* Gradient on active */
+  background: linear-gradient(180deg, #2563eb, #1d4ed8);
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.delay-100 {
+  animation-delay: 0.1s;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+}
+
+.delay-300 {
+  animation-delay: 0.3s;
+}
+
+@keyframes slideInBounce {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  70% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
 }
