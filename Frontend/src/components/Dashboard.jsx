@@ -24,7 +24,7 @@ const Dashboard = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [message, setMessage] = useState('');
-  const { authUser, otherUsers, selectedUsers } = useSelector(store => store.user);
+  const { authUser, otherUsers, selectedUsers, onlineUsers } = useSelector(store => store.user);
 
   const dispatch = useDispatch();
   const scroll = useRef(null);
@@ -128,9 +128,9 @@ const Dashboard = () => {
                     className='w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-gray-700'
                   />
                   {/* Green circle for online users */}
-                  {user.isOnline && (
+                  {onlineUsers?.includes(user._id.trim()) ? (
                     <div className='absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full border-2 border-gray-900'></div>
-                  )}
+                  ) : null}
                 </div>
                 <div>
                   <h2 className='text-sm md:text-base font-semibold text-white'>{user.username}</h2>

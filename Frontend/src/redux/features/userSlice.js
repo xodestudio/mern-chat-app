@@ -4,7 +4,7 @@ const initialState = {
   authUser: null,
   otherUsers: [],
   selectedUsers: null,
-  onlineUsers: null
+  onlineUsers: []
 };
 
 export const userSlice = createSlice({

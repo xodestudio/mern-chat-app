@@ -3,6 +3,10 @@ import { Server } from "socket.io";
 import http from "http";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dotenv from "dotenv";
+
+// Environment variables setup
+dotenv.config();
 
 // Express app setup
 const app = express();
@@ -10,12 +14,12 @@ const app = express();
 // Middleware
 app.use(cookieParser());
 app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true, limit: "16kb" }));
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
   cors({
-    origin: process.env.CORS_ORIGIN,
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     credentials: true,
   })
 );
@@ -34,33 +38,35 @@ const server = http.createServer(app);
 // Socket.io setup
 const io = new Server(server, {
   cors: {
-    origin: ["http://localhost:5173"],
+    origin: process.env.CORS_ORIGIN || "http://localhost:5173",
     methods: ["GET", "POST"],
     credentials: true,
   },
 });
 
-const userSocketMap = {};
+// Store active user sockets
+const userSocketMap = new Map();
 
 io.on("connection", (socket) => {
-  console.log("a user connected", socket.id);
+  console.log(`User connected: ${socket.id}`);
 
   const userId = socket.handshake.query.userId;
 
   if (userId && userId !== "undefined") {
-    userSocketMap[userId] = socket.id;
+    userSocketMap.set(userId, socket.id);
   }
 
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  // Emit updated online users
+  io.emit("getOnlineUsers", [...userSocketMap.keys()]);
 
-  socket.on("disconnect", (socket) => {
-    console.log("user disconnected", socket.id);
+  socket.on("disconnect", () => {
+    console.log(`User disconnected: ${socket.id}`);
 
-    if (userId && userSocketMap[userId]) {
-      delete userSocketMap[userId];
+    if (userId) {
+      userSocketMap.delete(userId);
     }
 
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+    io.emit("getOnlineUsers", [...userSocketMap.keys()]);
   });
 });
 
