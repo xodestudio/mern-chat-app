@@ -4,6 +4,8 @@ import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
 import { uploadImage, cropImage } from "../utils/cloudinary.js";
 import { io, userSocketMap } from "../socket/socket.js";
+import jwt from "jsonwebtoken";
+import { Conversation } from "../models/conversation.model.js";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -221,19 +223,57 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const getOtherUsers = asyncHandler(async (req, res) => {
   const currentLoggedInUser = req.user._id;
 
+  // Fetch all conversations involving the logged-in user
+  const conversations = await Conversation.find({
+    participants: { $in: [currentLoggedInUser] },
+  }).populate("messages");
+
+  // Prepare the response with unread message counts and latest messages
+  const otherUsersDetails = conversations.map((conversation) => {
+    const otherUserId = conversation.participants.find(
+      (participant) => participant.toString() !== currentLoggedInUser
+    );
+
+    const unreadMessagesCount = conversation.messages.filter(
+      (msg) => msg.receiverId.toString() === currentLoggedInUser && !msg.isRead
+    ).length;
+
+    const latestMessage =
+      conversation.messages.length > 0
+        ? conversation.messages[conversation.messages.length - 1].message
+        : null;
+
+    return {
+      userId: otherUserId,
+      unreadMessagesCount,
+      latestMessage,
+    };
+  });
+
+  // Fetch additional user details (e.g., username, avatar)
   const otherUsers = await User.find({
-    _id: {
-      $ne: currentLoggedInUser,
-    },
+    _id: { $ne: currentLoggedInUser },
   }).select("-password -refreshToken");
+
+  // Merge user details with unread message counts and latest messages
+  const enrichedUsers = otherUsers.map((user) => {
+    const userDetails = otherUsersDetails.find(
+      (details) => details.userId.toString() === user._id.toString()
+    );
+    return {
+      ...user.toObject(),
+      unreadMessagesCount: userDetails?.unreadMessagesCount || 0,
+      latestMessage: userDetails?.latestMessage || null,
+    };
+  });
 
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        otherUsers,
-        "All other Users are fetched Successfully"
+        enrichedUsers,
+        "All other users fetched successfully"
       )
     );
 });

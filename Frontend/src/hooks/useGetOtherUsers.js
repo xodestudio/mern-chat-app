@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import axios from 'axios';
+import axios from '../axiosConfig';
 import { useDispatch } from 'react-redux';
 import { setOtherUsers } from '../redux/features/userSlice';
 

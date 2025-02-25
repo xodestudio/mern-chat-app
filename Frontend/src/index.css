@@ -2,17 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+.stories-container {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
 }
-.scrollbar-hide {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+
+.stories-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, and Opera */
 }
 
 /* Modern Custom Scrollbar */
 .modern-scrollbar::-webkit-scrollbar {
   width: 10px;
+}
+
+.animate-slideInFromRight {
+  animation: slideInFromRight 0.3s ease-out;
+}
+
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 /* Scrollbar Track */
@@ -106,4 +120,88 @@
   to {
     width: 0%;
   }
+}
+
+/* Typing Text Animation */
+.typing-text {
+  font-family: 'Poppins', sans-serif; /* Use a modern font */
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  background: linear-gradient(90deg, #9eff7e, #15ff00); /* Gradient color */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: typing-text-animation 2s infinite ease-in-out;
+}
+
+@keyframes typing-text-animation {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05); /* Slight scaling effect */
+  }
+}
+
+/* Bounce Animation for Dots */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.animate-bounce {
+  animation: bounce 0.8s infinite ease-in-out;
+}
+
+.delay-0 {
+  animation-delay: 0ms;
+}
+
+.delay-100 {
+  animation-delay: 100ms;
+}
+
+.delay-200 {
+  animation-delay: 200ms;
+}
+
+/* Overall Typing Indicator Styling */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #a1a1aa; /* Subtle gray color */
+  margin-top: 0.5rem;
+}
+
+/* Custom Keyframes for Slide-In and Slide-Out */
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Combined Animation */
+.animate-slide-in-out {
+  animation: slide-in 0.5s ease-in-out forwards, pulse 1s 0.5s infinite, slide-out 0.5s 3.5s ease-in-out forwards;
 }

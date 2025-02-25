@@ -59,6 +59,24 @@ io.on("connection", (socket) => {
   // Emit updated online users
   io.emit("getOnlineUsers", [...userSocketMap.keys()]);
 
+  socket.on("sendMessage", (data) => {
+    const { receiverId } = data;
+    const receiverSocketId = userSocketMap.get(receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("receiveMessage", data);
+    }
+  });
+
+  // Handle typing event
+  socket.on("typing", (data) => {
+    socket.broadcast.emit("typing", data);
+  });
+
+  // Handle stop typing event
+  socket.on("stopTyping", (data) => {
+    socket.broadcast.emit("stopTyping", data);
+  });
+
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
 
@@ -67,6 +85,9 @@ io.on("connection", (socket) => {
     }
 
     io.emit("getOnlineUsers", [...userSocketMap.keys()]);
+
+    // Clean up all listeners for this socket
+    socket.removeAllListeners();
   });
 });
 

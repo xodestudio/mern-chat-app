@@ -28,7 +28,8 @@ const Message = ({ message, isLoggedInUser, senderAvatar }) => {
         <span className='text-xs text-gray-400 mt-1'>
           {new Date(message?.createdAt).toLocaleTimeString([], {
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            hour12: true // Enable 12-hour format
           })}
         </span>
       </div>

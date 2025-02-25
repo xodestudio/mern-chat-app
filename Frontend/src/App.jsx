@@ -1,13 +1,13 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import io from 'socket.io-client';
 import { setOnlineUsers } from './redux/features/userSlice.js';
-import { setSocket } from './redux/features/socketSlice.js';
-import Dashboard from './components/Dashboard.jsx';
-import Login from './components/Login.jsx';
-import Signup from './components/Signup.jsx';
-import Profile from './components/Profile.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+import Login from './pages/Login.jsx';
+import Signup from './pages/Signup.jsx';
+import Profile from './pages/Profile.jsx';
+import { addMessage } from './redux/features/messageSlice.js';
+import useSocket from './hooks/useSocket.js';
 
 const router = createBrowserRouter([
   { path: '/', element: <Dashboard /> },
@@ -19,29 +19,24 @@ const router = createBrowserRouter([
 function App() {
   const { authUser } = useSelector(store => store.user);
   const dispatch = useDispatch();
+  const socket = useSocket(authUser?.data?.user?._id);
 
   useEffect(() => {
-    let socket;
-    if (authUser?.data?.user?._id) {
-      socket = io('http://localhost:8000', {
-        withCredentials: true,
-        query: { userId: authUser.data.user._id }
-      });
+    if (!socket) return;
 
-      dispatch(setSocket({ id: socket.id }));
+    socket.on('getOnlineUsers', onlineUsers => {
+      dispatch(setOnlineUsers(onlineUsers));
+    });
 
-      socket.on('getOnlineUsers', onlineUsers => {
-        dispatch(setOnlineUsers(onlineUsers));
-      });
-    }
+    socket.on('receiveMessage', message => {
+      dispatch(addMessage(message));
+    });
 
     return () => {
-      if (socket) {
-        socket.disconnect();
-        dispatch(setSocket(null));
-      }
+      socket.off('getOnlineUsers');
+      socket.off('receiveMessage');
     };
-  }, [authUser, dispatch]);
+  }, [socket, dispatch]);
 
   return <RouterProvider router={router} />;
 }

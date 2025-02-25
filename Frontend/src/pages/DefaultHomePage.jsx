@@ -1,0 +1,86 @@
+import React from 'react';
+import { FaComments, FaUserFriends, FaRocket } from 'react-icons/fa';
+
+const DefaultHomePage = () => {
+  return (
+    <div className='flex flex-col items-center justify-center text-centerbg-gradient-to-br from-gray-900 to-gray-800 overflow-hidden h-[100%]'>
+      {/* Custom SVG Illustration */}
+      <div className='w-48 sm:w-64 md:w-80 mb-4 sm:mb-6 animate-float'>
+        <svg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'>
+          <g id='SVGRepo_bgCarrier' stroke-width='0'></g>
+          <g id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'></g>
+          <g id='SVGRepo_iconCarrier'>
+            {' '}
+            <path
+              fill-rule='evenodd'
+              clip-rule='evenodd'
+              d='M12 2.75C6.89137 2.75 2.75 6.89137 2.75 12C2.75 13.4811 3.09753 14.8788 3.7148 16.1181C3.96254 16.6155 4.05794 17.2103 3.90163 17.7945L3.30602 20.0205C3.19663 20.4293 3.57066 20.8034 3.97949 20.694L6.20553 20.0984C6.78973 19.9421 7.38451 20.0375 7.88191 20.2852C9.12121 20.9025 10.5189 21.25 12 21.25C17.1086 21.25 21.25 17.1086 21.25 12C21.25 6.89137 17.1086 2.75 12 2.75ZM1.25 12C1.25 6.06294 6.06294 1.25 12 1.25C17.9371 1.25 22.75 6.06294 22.75 12C22.75 17.9371 17.9371 22.75 12 22.75C10.2817 22.75 8.65552 22.3463 7.21315 21.6279C6.99791 21.5207 6.77814 21.4979 6.59324 21.5474L4.3672 22.143C2.84337 22.5507 1.44927 21.1566 1.857 19.6328L2.4526 17.4068C2.50208 17.2219 2.47933 17.0021 2.37213 16.7869C1.65371 15.3445 1.25 13.7183 1.25 12ZM7.25 10.5C7.25 10.0858 7.58579 9.75 8 9.75H16C16.4142 9.75 16.75 10.0858 16.75 10.5C16.75 10.9142 16.4142 11.25 16 11.25H8C7.58579 11.25 7.25 10.9142 7.25 10.5ZM7.25 14C7.25 13.5858 7.58579 13.25 8 13.25H13.5C13.9142 13.25 14.25 13.5858 14.25 14C14.25 14.4142 13.9142 14.75 13.5 14.75H8C7.58579 14.75 7.25 14.4142 7.25 14Z'
+              fill='#ffffff'
+            ></path>{' '}
+          </g>
+        </svg>
+      </div>
+
+      {/* Welcome Heading */}
+      <h1 className='text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-3 sm:mb-4 animate-fade-in'>
+        Welcome to <span className='text-blue-500'>Messenger</span>
+      </h1>
+
+      {/* Subheading */}
+      <p className='text-base sm:text-lg md:text-xl text-gray-400 mb-6 sm:mb-8 animate-fade-in delay-100 max-w-2xl text-center'>
+        Connect with your friends and colleagues seamlessly. Start chatting, sharing, and
+        collaborating today!
+      </p>
+
+      {/* Features Section */}
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 animate-fade-in delay-200 w-full max-w-6xl px-4 sm:px-6'>
+        {/* Feature 1: Chat */}
+        <div className='p-4 sm:p-6 bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center'>
+          <div className='flex justify-center'>
+            <div className='p-3 sm:p-4 bg-blue-900 rounded-full'>
+              <FaComments className='text-2xl sm:text-3xl text-blue-500' />
+            </div>
+          </div>
+          <h2 className='text-lg sm:text-xl font-semibold text-white mt-3 sm:mt-4'>
+            Real-Time Chat
+          </h2>
+          <p className='text-sm sm:text-base text-gray-400 mt-2'>
+            Enjoy instant messaging with friends and colleagues.
+          </p>
+        </div>
+
+        {/* Feature 2: Connect */}
+        <div className='p-4 sm:p-6 bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center'>
+          <div className='flex justify-center'>
+            <div className='p-3 sm:p-4 bg-purple-900 rounded-full'>
+              <FaUserFriends className='text-2xl sm:text-3xl text-purple-500' />
+            </div>
+          </div>
+          <h2 className='text-lg sm:text-xl font-semibold text-white mt-3 sm:mt-4'>
+            Connect Easily
+          </h2>
+          <p className='text-sm sm:text-base text-gray-400 mt-2'>
+            Find and connect with your friends effortlessly.
+          </p>
+        </div>
+
+        {/* Feature 3: Fast */}
+        <div className='p-4 sm:p-6 bg-gray-800 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 text-center'>
+          <div className='flex justify-center'>
+            <div className='p-3 sm:p-4 bg-green-900 rounded-full'>
+              <FaRocket className='text-2xl sm:text-3xl text-green-500' />
+            </div>
+          </div>
+          <h2 className='text-lg sm:text-xl font-semibold text-white mt-3 sm:mt-4'>
+            Lightning Fast
+          </h2>
+          <p className='text-sm sm:text-base text-gray-400 mt-2'>
+            Experience blazing-fast messaging with no delays.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DefaultHomePage;
