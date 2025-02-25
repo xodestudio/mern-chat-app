@@ -6,6 +6,7 @@ import {
   logoutUser,
   refreshAccessToken,
   getOtherUsers,
+  editUser,
 } from "../controllers/user.controller.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
@@ -26,5 +27,14 @@ router.route("/logout").post(verifyJWT, logoutUser);
 router.route("/refresh-token").post(refreshAccessToken);
 router.route("/other-users").get(verifyJWT, getOtherUsers);
 router.route("/refresh-token").post(refreshAccessToken);
+router.route("/edit-profile").put(
+  verifyJWT,
+  upload.fields([
+    { name: "avatar", maxCount: 1 },
+    { name: "coverPhoto", maxCount: 1 },
+  ]),
+  handleUploadError,
+  editUser
+);
 
 export default router;

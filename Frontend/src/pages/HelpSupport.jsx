@@ -1,5 +1,4 @@
-import React from 'react';
-import { FaInfoCircle, FaChevronLeft } from 'react-icons/fa';
+import { FaChevronLeft } from 'react-icons/fa';
 
 const HelpSupport = ({ onClose }) => {
   return (

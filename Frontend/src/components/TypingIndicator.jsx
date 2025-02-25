@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
 const TypingIndicator = () => {
-  const [dots, setDots] = useState(''); // Tracks the number of dots
+  const [dots, setDots] = useState(''); // State to track the dots
 
   useEffect(() => {
     // Create an interval to update the dots every 300ms
@@ -14,13 +14,14 @@ const TypingIndicator = () => {
       });
     }, 300);
 
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
   }, []);
 
   return (
     <div className='flex items-center space-x-2 text-gray-400 text-sm mt-2'>
       {/* Unique Typing Text */}
-      <span className='typing-text'>Typing</span>
+      <span className='typing-text'>Typing{dots}</span>
 
       {/* Animated Dots */}
       <div className='flex space-x-1'>

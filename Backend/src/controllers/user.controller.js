@@ -6,6 +6,7 @@ import { uploadImage, cropImage } from "../utils/cloudinary.js";
 import { io, userSocketMap } from "../socket/socket.js";
 import jwt from "jsonwebtoken";
 import { Conversation } from "../models/conversation.model.js";
+import bcrypt from "bcryptjs";
 
 const generateAccessAndRefereshTokens = async (userId) => {
   try {
@@ -28,6 +29,16 @@ const generateAccessAndRefereshTokens = async (userId) => {
       "Something went wrong while generating referesh and access token"
     );
   }
+};
+
+const hashPassword = async (password) => {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt);
+};
+
+const handleImageUpload = async (filePath) => {
+  const image = await uploadImage(filePath);
+  return image ? cropImage(image.public_id) : null;
 };
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -278,10 +289,57 @@ const getOtherUsers = asyncHandler(async (req, res) => {
     );
 });
 
+const editUser = asyncHandler(async (req, res) => {
+  const userId = req.user?._id;
+  if (!userId) {
+    throw new ApiError(400, "User ID is required");
+  }
+
+  // Extract user input fields
+  const { fullName, username, age, password } = req.body;
+
+  if (!fullName && !username && !age && !password) {
+    throw new ApiError(400, "No fields to update");
+  }
+
+  const updateData = {};
+
+  if (fullName) updateData.fullName = fullName;
+  if (username) updateData.username = username;
+  if (age) updateData.age = age;
+  if (password) updateData.password = await hashPassword(password);
+
+  const files = req.files || {};
+  if (files.avatar) {
+    updateData.avatar = await handleImageUpload(files.avatar[0].path);
+  }
+  if (files.coverPhoto) {
+    updateData.coverPhoto = await handleImageUpload(files.coverPhoto[0].path);
+  }
+
+  // Update user in one query
+  const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+    new: true,
+    runValidators: true,
+    select: "-password -refreshToken",
+  });
+
+  if (!updatedUser) {
+    throw new ApiError(404, "User not found");
+  }
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(200, updatedUser, "User profile updated successfully")
+    );
+});
+
 export {
   registerUser,
   loginUser,
   logoutUser,
   refreshAccessToken,
   getOtherUsers,
+  editUser,
 };

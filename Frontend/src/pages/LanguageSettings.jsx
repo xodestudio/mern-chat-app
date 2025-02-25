@@ -1,5 +1,4 @@
-import React from 'react';
-import { FaLanguage, FaChevronLeft } from 'react-icons/fa';
+import { FaChevronLeft } from 'react-icons/fa';
 
 const LanguageSettings = ({ onClose }) => {
   return (

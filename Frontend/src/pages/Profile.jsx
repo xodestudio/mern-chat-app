@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   FaUserEdit,
   FaBell,
@@ -117,8 +117,10 @@ const Profile = ({ onClose }) => {
             <div
               className='relative mb-8 w-full h-64 rounded-lg overflow-hidden bg-cover bg-center shadow-lg animate-fadeIn'
               style={{
-                backgroundImage:
-                  'url(https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80)'
+                backgroundImage: `url(${
+                  authUser?.data?.user?.coverPhoto ||
+                  'https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+                })`
               }}
             >
               {/* Close Icon */}
@@ -130,9 +132,9 @@ const Profile = ({ onClose }) => {
               </button>
 
               {/* Profile Image */}
-              <div className='absolute -bottom-0 left-6 w-28 h-28 rounded-full overflow-hidden border-4 border-white/80 shadow-lg bg-white'>
+              <div className='absolute -bottom-0 left-6 w-40 rounded-full overflow-hidden border-4 border-pink-300/80 shadow-lg bg-white'>
                 <img
-                  src={authUser.data.user.avatar}
+                  src={authUser?.data?.user?.avatar}
                   alt='Profile'
                   className='w-full h-full object-cover object-top'
                 />
@@ -141,8 +143,8 @@ const Profile = ({ onClose }) => {
 
             {/* Name and Email */}
             <div className='mt-20 mb-8 animate-fadeIn'>
-              <h2 className='text-3xl font-bold text-white'>{authUser.data.user.fullName}</h2>
-              <p className='text-lg text-gray-300'>{authUser.data.user.username}</p>
+              <h2 className='text-3xl font-bold text-white'>{authUser?.data?.user?.fullName}</h2>
+              <p className='text-lg text-gray-300'>@{authUser?.data?.user?.username}</p>
             </div>
 
             {/* Grid Layout for Buttons */}
@@ -240,7 +242,7 @@ const Profile = ({ onClose }) => {
               {/* Payment Methods */}
               <div
                 className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={() => setActiveComponent('paymentMethods')}
+                // onClick={() => setActiveComponent('paymentMethods')}
               >
                 <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
                   <FaCreditCard className='text-blue-400 text-2xl' />
