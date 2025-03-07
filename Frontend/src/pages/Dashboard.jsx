@@ -11,7 +11,6 @@ import { FiSend } from 'react-icons/fi';
 import { IoMdAddCircleOutline } from 'react-icons/io';
 import { HiOutlinePencilAlt } from 'react-icons/hi';
 import EmojiPicker from 'emoji-picker-react';
-import { ReactMic } from 'react-mic';
 import useGetOtherUsers from '../hooks/useGetOtherUsers.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser, setSelectedUsers } from '../redux/features/userSlice.js';
@@ -21,7 +20,6 @@ import axios from 'axios';
 import { setMessages } from '../redux/features/messageSlice.js';
 import Message from './Message.jsx';
 import DefaultHomePage from './DefaultHomePage.jsx';
-import TokenExpiryPopup from './TokenExpiryPopup.jsx';
 import useSendMessage from '../hooks/useSendMessage.js';
 import useSocket from '../hooks/useSocket.js';
 import TypingIndicator from '../components/TypingIndicator.jsx';
@@ -32,8 +30,6 @@ const Dashboard = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState(null);
   const { authUser, otherUsers, selectedUsers, onlineUsers } = useSelector(store => store.user);
 
   const dispatch = useDispatch();
@@ -104,33 +100,6 @@ const Dashboard = () => {
     };
   }, []);
 
-  useEffect(() => {
-    const checkTokenExpiry = async () => {
-      try {
-        const response = await axios.post(
-          'http://localhost:8000/api/v1/users/refresh-token',
-          {},
-          { withCredentials: true }
-        );
-
-        if (response.data.accessToken) {
-          dispatch(setAuthUser(response.data));
-        }
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-        alert('Your session has expired. Please log in again.');
-        window.location.href = '/login';
-      }
-    };
-
-    if (authUser && authUser.accessToken) {
-      const decodedToken = jwt.decode(authUser.accessToken);
-      if (decodedToken.exp * 1000 < Date.now()) {
-        checkTokenExpiry();
-      }
-    }
-  }, [authUser, dispatch]);
-
   const selectedUserHandler = useCallback(
     user => {
       dispatch(setSelectedUsers(user));
@@ -155,31 +124,14 @@ const Dashboard = () => {
     setShowEmojiPicker(false);
   };
 
-  const startRecording = () => {
-    setIsRecording(true);
-  };
-
-  const stopRecording = () => {
-    setIsRecording(false);
-  };
-
-  const onData = recordedBlob => {
-    console.log('chunk of real-time data is: ', recordedBlob);
-  };
-
-  const onStop = recordedBlob => {
-    setAudioBlob(recordedBlob);
-  };
-
   const submitHandler = async e => {
     e.preventDefault();
-    if (!message.trim() && !audioBlob) return;
+    if (!message.trim()) return;
 
     try {
       axios.defaults.withCredentials = true;
       const formData = new FormData();
       if (message) formData.append('message', message);
-      if (audioBlob) formData.append('audio', audioBlob.blob, 'recording.webm');
 
       const response = await axios.post(
         `http://localhost:8000/api/v1/messages/send-message/${selectedUsers?._id}`,
@@ -195,7 +147,6 @@ const Dashboard = () => {
       console.log(error);
     }
     setMessage('');
-    setAudioBlob(null);
     setIsTyping(false);
   };
 
@@ -430,10 +381,7 @@ const Dashboard = () => {
                     className='w-full bg-gray-700 text-sm md:text-base px-4 py-2 md:px-5 md:py-3 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 text-white pr-12' // Added padding-right for mic icon
                   />
                   {/* Microphone Icon inside Input */}
-                  <FaMicrophone
-                    className='text-xl md:text-2xl cursor-pointer text-gray-400 hover:text-white absolute right-4 top-1/2 transform -translate-y-1/2'
-                    onClick={isRecording ? stopRecording : startRecording}
-                  />
+                  <FaMicrophone className='text-xl md:text-2xl cursor-pointer text-gray-400 hover:text-white absolute right-4 top-1/2 transform -translate-y-1/2' />
                 </div>
 
                 {/* Send Button */}
@@ -442,28 +390,11 @@ const Dashboard = () => {
                 </button>
               </form>
             )}
-
-            {/* Voice Recording Indicator */}
-            {isRecording && (
-              <div className='p-4 md:p-6 border-t border-gray-700 bg-gray-800'>
-                <ReactMic
-                  record={isRecording}
-                  className='w-full'
-                  onStop={onStop}
-                  onData={onData}
-                  strokeColor='#000000'
-                  backgroundColor='#FF4081'
-                />
-              </div>
-            )}
           </section>
         )}
 
         {/* Profile Section */}
         {showProfile && <Profile onClose={() => setShowProfile(false)} />}
-
-        {/* Token Expiry Popup */}
-        <TokenExpiryPopup />
       </div>
     </div>
   );

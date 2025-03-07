@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import axios from '../axiosConfig';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage } from '../redux/features/messageSlice';
 import useSocket from './useSocket';

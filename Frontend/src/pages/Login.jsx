@@ -21,22 +21,6 @@ const Login = () => {
 
   // Check for refresh token and "Remember Me" on mount
   useEffect(() => {
-    const checkRefreshToken = async () => {
-      try {
-        const response = await axios.post(
-          'http://localhost:8000/api/v1/users/refresh-token',
-          {},
-          { withCredentials: true }
-        );
-        if (response.data.accessToken) {
-          dispatch(setAuthUser(response.data));
-          navigate('/');
-        }
-      } catch (error) {
-        console.error('Error refreshing token:', error);
-      }
-    };
-
     // Check localStorage for "Remember Me"
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -44,8 +28,7 @@ const Login = () => {
       setUser(parsedUser);
       setRememberMe(true);
     }
-    checkRefreshToken();
-  }, [dispatch, navigate]);
+  }, []);
 
   // Toggle password visibility
   const togglePassword = useCallback(() => {

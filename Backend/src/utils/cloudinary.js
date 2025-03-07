@@ -18,21 +18,11 @@ const uploadImage = async (filePath) => {
     });
 
     fs.unlinkSync(filePath); // Remove the local file after upload
-    return response;
+    return response.secure_url;
   } catch (error) {
     console.error("Upload failed:", error.message);
     return null;
   }
 };
 
-// Function to crop image to square
-const cropImage = (publicId) => {
-  return cloudinary.url(publicId, {
-    crop: "auto",
-    gravity: "auto",
-    width: 500,
-    height: 500,
-  });
-};
-
-export { uploadImage, cropImage };
+export { uploadImage };

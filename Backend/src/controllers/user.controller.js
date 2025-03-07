@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-import { uploadImage, cropImage } from "../utils/cloudinary.js";
+import { uploadImage } from "../utils/cloudinary.js";
 import { io, userSocketMap } from "../socket/socket.js";
 import jwt from "jsonwebtoken";
 import { Conversation } from "../models/conversation.model.js";
@@ -34,11 +34,6 @@ const generateAccessAndRefereshTokens = async (userId) => {
 const hashPassword = async (password) => {
   const salt = await bcrypt.genSalt(10);
   return bcrypt.hash(password, salt);
-};
-
-const handleImageUpload = async (filePath) => {
-  const image = await uploadImage(filePath);
-  return image ? cropImage(image.public_id) : null;
 };
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -84,7 +79,7 @@ const registerUser = asyncHandler(async (req, res) => {
     gender,
     password,
     age: parseInt(age),
-    avatar: cropImage(avatar.public_id),
+    avatar,
   });
 
   const createdUser = await User.findById(user._id).select(
@@ -311,10 +306,11 @@ const editUser = asyncHandler(async (req, res) => {
 
   const files = req.files || {};
   if (files.avatar) {
-    updateData.avatar = await handleImageUpload(files.avatar[0].path);
+    console.log("files", files.avatar);
+    updateData.avatar = await uploadImage(files.avatar[0].path);
   }
   if (files.coverPhoto) {
-    updateData.coverPhoto = await handleImageUpload(files.coverPhoto[0].path);
+    updateData.coverPhoto = await uploadImage(files.coverPhoto[0].path);
   }
 
   // Update user in one query

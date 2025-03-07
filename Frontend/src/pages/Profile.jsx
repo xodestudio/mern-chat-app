@@ -132,7 +132,7 @@ const Profile = ({ onClose }) => {
               </button>
 
               {/* Profile Image */}
-              <div className='absolute -bottom-0 left-6 w-40 rounded-full overflow-hidden border-4 border-pink-300/80 shadow-lg bg-white'>
+              <div className='absolute -bottom-0 left-6 w-40 h-10 rounded-full overflow-hidden border-4 border-pink-300/80 shadow-lg bg-white'>
                 <img
                   src={authUser?.data?.user?.avatar}
                   alt='Profile'

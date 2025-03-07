@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import axios from '../axiosConfig';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage, setMessages } from '../redux/features/messageSlice';
 import useSocket from './useSocket.js';
