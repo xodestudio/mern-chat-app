@@ -37,7 +37,7 @@
 
 /* Scrollbar Thumb */
 .modern-scrollbar::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #3b82f6, #2563eb); 
+  background: linear-gradient(180deg, #3b82f6, #2563eb);
   border-radius: 10px;
   border: 2px solid #1f2937;
   box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -54,7 +54,6 @@
 .modern-scrollbar::-webkit-scrollbar-thumb:active {
   background: linear-gradient(180deg, #2563eb, #1d4ed8);
 }
-
 
 @keyframes fadeIn {
   from {
@@ -134,7 +133,8 @@
 }
 
 @keyframes typing-text-animation {
-  0%, 100% {
+  0%,
+  100% {
     transform: scale(1);
   }
   50% {
@@ -144,7 +144,8 @@
 
 /* Bounce Animation for Dots */
 @keyframes bounce {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -203,5 +204,6 @@
 
 /* Combined Animation */
 .animate-slide-in-out {
-  animation: slide-in 0.5s ease-in-out forwards, pulse 1s 0.5s infinite, slide-out 0.5s 3.5s ease-in-out forwards;
+  animation: slide-in 0.5s ease-in-out forwards, pulse 1s 0.5s infinite,
+    slide-out 0.5s 3.5s ease-in-out forwards;
 }

@@ -108,8 +108,7 @@ const EditProfile = ({ onClose }) => {
                       authUser?.data?.user?.coverPhoto ||
                       'https://images.unsplash.com/photo-1519681393784-d120267933ba?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
                     })`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center'
+              backgroundSize: 'cover'
             }}
           >
             <label className='cursor-pointer p-3 bg-gray-900/70 rounded-full hover:bg-gray-800/80 transition duration-300'>

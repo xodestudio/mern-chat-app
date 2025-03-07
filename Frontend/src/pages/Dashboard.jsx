@@ -5,15 +5,15 @@ import {
   AiOutlineInfoCircle,
   AiOutlineSearch
 } from 'react-icons/ai';
+import { PiDotsThreeOutlineVerticalDuotone } from 'react-icons/pi';
 import { FaMicrophone, FaImage, FaSmile } from 'react-icons/fa';
 import { BsPaperclip } from 'react-icons/bs';
 import { FiSend } from 'react-icons/fi';
-import { IoMdAddCircleOutline } from 'react-icons/io';
 import { HiOutlinePencilAlt } from 'react-icons/hi';
 import EmojiPicker from 'emoji-picker-react';
 import useGetOtherUsers from '../hooks/useGetOtherUsers.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAuthUser, setSelectedUsers } from '../redux/features/userSlice.js';
+import { setSelectedUsers } from '../redux/features/userSlice.js';
 import Profile from './Profile.jsx';
 import useGetMessages from '../hooks/useGetMessages.js';
 import axios from 'axios';
@@ -167,26 +167,6 @@ const Dashboard = () => {
           />
         </div>
 
-        {/* Stories Section */}
-        <div className='p-4 md:p-6 border-b border-gray-700'>
-          <div className='flex items-center space-x-3 md:space-x-4 overflow-x-auto scrollbar-hide'>
-            <IoMdAddCircleOutline className='text-3xl md:text-4xl text-blue-500 cursor-pointer hover:text-blue-400 flex-shrink-0' />
-            <div className='flex space-x-2 md:space-x-3 overflow-x-auto scrollbar-hide stories-container'>
-              {[1, 2, 3, 4, 5].map(item => (
-                <img
-                  key={item}
-                  src={`https://randomuser.me/api/portraits/${
-                    item % 2 === 0 ? 'men' : 'women'
-                  }/${item}.jpg`}
-                  alt={`User ${item}`}
-                  className='w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-blue-500 flex-shrink-0'
-                  loading='lazy'
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Search Bar */}
         <div className='p-4 md:p-6 border-b border-gray-700'>
           <div className='flex items-center space-x-3 bg-gray-700 rounded-full px-4 py-2'>
@@ -252,7 +232,7 @@ const Dashboard = () => {
             onClick={() => setIsSidebarVisible(!isSidebarVisible)}
             className='text-gray-400 hover:text-white'
           >
-            <HiOutlinePencilAlt className='text-xl cursor-pointer' />
+            <PiDotsThreeOutlineVerticalDuotone className='text-xl cursor-pointer' />
           </button>
         </div>
 
@@ -286,7 +266,7 @@ const Dashboard = () => {
             ) : null}
 
             {/* Main Content */}
-            <div className='flex-1 overflow-y-auto bg-gray-900 modern-scrollbar'>
+            <div className='p-8 flex-1 overflow-y-auto bg-gray-900 modern-scrollbar'>
               {!selectedUsers ? (
                 <DefaultHomePage />
               ) : (

@@ -10,7 +10,14 @@ import {
   FaSun,
   FaCreditCard,
   FaLanguage,
-  FaInfoCircle
+  FaInfoCircle,
+  FaFacebook,
+  FaTwitter,
+  FaInstagram,
+  FaLinkedin,
+  FaGithub,
+  FaYoutube,
+  FaTiktok
 } from 'react-icons/fa';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -132,7 +139,7 @@ const Profile = ({ onClose }) => {
               </button>
 
               {/* Profile Image */}
-              <div className='absolute -bottom-0 left-6 w-40 h-10 rounded-full overflow-hidden border-4 border-pink-300/80 shadow-lg bg-white'>
+              <div className='absolute -bottom-0 left-6 w-40 h-40 rounded-full overflow-hidden border-4 border-pink-300/80 shadow-lg bg-white'>
                 <img
                   src={authUser?.data?.user?.avatar}
                   alt='Profile'
@@ -142,9 +149,69 @@ const Profile = ({ onClose }) => {
             </div>
 
             {/* Name and Email */}
-            <div className='mt-20 mb-8 animate-fadeIn'>
-              <h2 className='text-3xl font-bold text-white'>{authUser?.data?.user?.fullName}</h2>
-              <p className='text-lg text-gray-300'>@{authUser?.data?.user?.username}</p>
+            <div className='mb-8 flex items-center justify-center w-full px-6'>
+              <div className='w-full max-w-5xl p-10 bg-gray-900/60 rounded-2xl backdrop-blur-xl border-2 border-gray-700 shadow-2xl shadow-blue-500/30 relative overflow-hidden flex flex-col items-center'>
+                {/* Profile Header */}
+                <div className='w-full flex justify-between items-center px-6'>
+                  <div className='text-left'>
+                    <h2 className='text-5xl font-extrabold text-white neon-text'>
+                      {authUser?.data?.user?.fullName}
+                    </h2>
+                    <p className='text-xl text-gray-300 font-medium'>
+                      @{authUser?.data?.user?.username}
+                    </p>
+                  </div>
+                  {/* Social Media Icons */}
+                  <div className='flex space-x-4 text-4xl text-white'>
+                    {[
+                      FaFacebook,
+                      FaTwitter,
+                      FaInstagram,
+                      FaLinkedin,
+                      FaGithub,
+                      FaYoutube,
+                      FaTiktok
+                    ].map((Icon, index) => (
+                      <a
+                        key={index}
+                        href='#'
+                        className='neon-icon hover:text-blue-400 transition duration-300 transform hover:scale-125 hover:rotate-6'
+                      >
+                        <Icon />
+                      </a>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Description */}
+                <p className='text-sm text-gray-400 italic max-w-lg mt-4 text-center'>
+                  🚀 Passionate Developer | Tech Enthusiast | Innovator | Content Creator 🎥 | AI
+                  Explorer | Open Source Contributor
+                </p>
+
+                {/* Stats Section */}
+                <div className='flex justify-center space-x-10 mt-6 text-gray-300 w-full'>
+                  <div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
+                    <p className='text-3xl font-bold text-white'>1.2K</p>
+                    <p className='text-sm uppercase tracking-wider'>Followers</p>
+                  </div>
+                  <div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
+                    <p className='text-3xl font-bold text-white'>320</p>
+                    <p className='text-sm uppercase tracking-wider'>Posts</p>
+                  </div>
+                  <div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
+                    <p className='text-3xl font-bold text-white'>85</p>
+                    <p className='text-sm uppercase tracking-wider'>Projects</p>
+                  </div>
+                  <div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
+                    <p className='text-3xl font-bold text-white'>15</p>
+                    <p className='text-sm uppercase tracking-wider'>Years Exp</p>
+                  </div>
+                </div>
+
+                {/* Animated Border Effect */}
+                <div className='absolute inset-0 w-full h-full bg-gradient-to-r from-[rgb(74,90,85)] via-[rgb(84,90,161)] to-[rgb(70,62,125)] opacity-30 blur-2xl'></div>
+              </div>
             </div>
 
             {/* Grid Layout for Buttons */}
