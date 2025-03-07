@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
-import axios from '../axiosConfig';
+import axios from 'axios';
 
 const TokenExpiryPopup = () => {
   const dispatch = useDispatch();

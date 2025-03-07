@@ -17,7 +17,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAuthUser, setSelectedUsers } from '../redux/features/userSlice.js';
 import Profile from './Profile.jsx';
 import useGetMessages from '../hooks/useGetMessages.js';
-import axios from '../axiosConfig.js';
+import axios from 'axios';
 import { setMessages } from '../redux/features/messageSlice.js';
 import Message from './Message.jsx';
 import DefaultHomePage from './DefaultHomePage.jsx';

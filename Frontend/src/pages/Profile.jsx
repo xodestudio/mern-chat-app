@@ -12,7 +12,7 @@ import {
   FaLanguage,
   FaInfoCircle
 } from 'react-icons/fa';
-import axios from '../axiosConfig';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Cookies from 'js-cookie';

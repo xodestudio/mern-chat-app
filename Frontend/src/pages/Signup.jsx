@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import '@fontsource/poppins';
 import { RiMailFill, RiLock2Fill, RiUser3Fill } from 'react-icons/ri';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import axios from '../axiosConfig';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import signupImg from '../assets/signup.jpg';
 

@@ -9,7 +9,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
-import axios from '../axiosConfig';
+import axios from 'axios';
 
 const Login = () => {
   const [user, setUser] = useState({ username: '', password: '' });

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FaTimes, FaSave, FaUser, FaEnvelope, FaLock, FaCamera } from 'react-icons/fa';
-import axios from '../axiosConfig';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
