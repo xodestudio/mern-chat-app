@@ -6,10 +6,10 @@ import { FaUserCircle } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
-import 'react-toastify/dist/ReactToastify.css';
 import { useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
 import axios from 'axios';
+import { motion } from 'framer-motion';
 
 const Login = () => {
   const [user, setUser] = useState({ username: '', password: '' });
@@ -21,7 +21,6 @@ const Login = () => {
 
   // Check for refresh token and "Remember Me" on mount
   useEffect(() => {
-    // Check localStorage for "Remember Me"
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser);
@@ -102,33 +101,73 @@ const Login = () => {
   }, []);
 
   return (
-    <div className='font-poppins h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-blue-900 relative overflow-hidden'>
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.8 }}
+      className='font-poppins h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-blue-900 relative overflow-hidden'
+    >
       {/* Background Animation */}
-      <div className="absolute inset-0 bg-[url('https://static.vecteezy.com/system/resources/previews/009/760/750/non_2x/background-with-pieces-of-bubble-liquid-shape-and-gradient-color-free-vector.jpg')] bg-cover bg-center"></div>
-      <div className='absolute inset-0 flex items-center justify-center'>
-        {/* <div className='w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse'></div> */}
-        <div className='w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse'></div>
-      </div>
+      <motion.div
+        className='absolute inset-0 bg-[url(https://static.vecteezy.com/system/resources/previews/009/760/750/non_2x/background-with-pieces-of-bubble-liquid-shape-and-gradient-color-free-vector.jpg)] bg-cover bg-center'
+        initial={{ scale: 1.1 }}
+        animate={{ scale: 1 }}
+        transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+      ></motion.div>
+      <motion.div
+        className='absolute inset-0 flex items-center justify-center'
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1, delay: 0.5 }}
+      >
+        <motion.div
+          className='w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 bg-blue-500/10 rounded-full blur-3xl'
+          animate={{
+            scale: [1, 1.1, 1],
+            rotate: [0, 360, 0]
+          }}
+          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+        ></motion.div>
+      </motion.div>
 
       {/* Login Box */}
-      <div className='bg-white/10 border-2 border-white/20 rounded-3xl backdrop-blur-md shadow-2xl animate-fade-in mx-4 w-full max-w-4xl overflow-hidden flex flex-col md:flex-row relative'>
+      <motion.div
+        className='bg-white/10 border-2 border-white/20 rounded-3xl backdrop-blur-md shadow-2xl mx-4 w-full max-w-4xl overflow-hidden flex flex-col md:flex-row relative'
+        whileHover={{ boxShadow: '0 10px 30px rgba(0, 123, 255, 0.3)' }}
+        transition={{ duration: 0.3 }}
+      >
         {/* Left Side: Illustration (Hidden on Mobile) */}
-        <div className='hidden md:block w-full lg:w-1/2 p-8 lg:p-12 items-center justify-center'>
+        <motion.div
+          className='hidden md:block w-full lg:w-1/2 p-8 lg:p-12 items-center justify-center'
+          initial={{ x: -50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+        >
           <img
             src='https://cdni.iconscout.com/illustration/premium/thumb/login-illustration-download-in-svg-png-gif-file-formats--account-password-security-lock-design-development-illustrations-2757111.png?f=webp'
             alt='Illustration'
             className='w-full h-[100%] sm:w-64 md:w-72 lg:w-80 object-contain'
           />
-        </div>
+        </motion.div>
 
         {/* Right Side: Login Form */}
-        <div className='w-full lg:w-1/2 p-8 lg:p-12 text-white'>
+        <motion.div
+          className='w-full lg:w-1/2 p-8 lg:p-12 text-white'
+          initial={{ x: 50, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+        >
           <h1 className='text-center text-xl sm:text-2xl lg:text-4xl font-bold mb-4 lg:mb-8'>
             Welcome Back!
           </h1>
 
           {/* Username Input */}
-          <div className='flex items-center border-2 border-white/20 px-4 lg:px-6 py-3 lg:py-4 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-4 lg:mb-6'>
+          <motion.div
+            className='flex items-center border-2 border-white/20 px-4 lg:px-6 py-3 lg:py-4 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-4 lg:mb-6'
+            whileHover={{ borderColor: '#4CAF50', boxShadow: '0 0 10px rgba(76, 175, 80, 0.5)' }}
+            transition={{ duration: 0.3 }}
+          >
             <FaUserCircle className='text-lg sm:text-xl lg:text-2xl text-white' />
             <input
               type='text'
@@ -141,10 +180,14 @@ const Login = () => {
               onChange={handleChange}
               aria-label='Username'
             />
-          </div>
+          </motion.div>
 
           {/* Password Input */}
-          <div className='flex items-center border-2 border-white/20 px-4 lg:px-6 py-3 lg:py-4 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-3 lg:mb-6'>
+          <motion.div
+            className='flex items-center border-2 border-white/20 px-4 lg:px-6 py-3 lg:py-4 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-3 lg:mb-6'
+            whileHover={{ borderColor: '#FF5733', boxShadow: '0 0 10px rgba(255, 87, 51, 0.5)' }}
+            transition={{ duration: 0.3 }}
+          >
             <RiLock2Fill className='text-lg sm:text-xl lg:text-2xl text-white' />
             <input
               type={showPassword ? 'text' : 'password'}
@@ -164,7 +207,7 @@ const Login = () => {
                 <AiOutlineEye className='text-lg sm:text-xl lg:text-2xl text-white' />
               )}
             </div>
-          </div>
+          </motion.div>
 
           {/* Remember Me and Forgot Password */}
           <div className='flex justify-evenly items-center mt-4 lg:mt-6 text-xs sm:text-sm lg:text-base'>
@@ -187,29 +230,40 @@ const Login = () => {
           </div>
 
           {/* Login Button */}
-          <button
+          <motion.button
             type='submit'
             className='w-full py-3 lg:py-4 bg-blue-600 text-white rounded-full font-medium mt-6 lg:mt-8 hover:bg-blue-500 transition duration-300 text-xs sm:text-sm lg:text-base'
             disabled={loading}
             onClick={handleSubmit}
             aria-label='Login'
+            whileHover={{
+              boxShadow: '0 0 20px rgba(76, 175, 80, 0.7)',
+              background: 'linear-gradient(135deg, #4CAF50, #388E3C)'
+            }}
+            transition={{ duration: 0.3 }}
           >
             {loading ? 'Logging in...' : 'Login'}
-          </button>
+          </motion.button>
 
           {/* Register Link */}
           <div className='flex justify-center gap-1 text-center text-xs sm:text-sm lg:text-base mt-4 lg:mt-6 text-white'>
             Don't have an account?
-            <Link to='/signup' className='font-medium hover:underline' aria-label='Register'>
+            <Link
+              to='/signup'
+              className='font-medium hover:underline'
+              aria-label='Register'
+              whileHover={{ color: '#4CAF50' }}
+              transition={{ duration: 0.3 }}
+            >
               Register
             </Link>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Toast Container */}
       <ToastContainer />
-    </div>
+    </motion.div>
   );
 };
 
