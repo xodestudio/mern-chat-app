@@ -1,205 +1,202 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  FaCreditCard,
+  FaUserCircle,
   FaChevronLeft,
-  FaPaypal,
-  FaApplePay,
-  FaGooglePay,
-  FaBitcoin,
+  FaLock,
+  FaEnvelope,
+  FaPhone,
   FaHistory,
-  FaWallet
+  FaBell,
+  FaShieldAlt
 } from 'react-icons/fa';
-import { SiVisa, SiMastercard, SiStripe } from 'react-icons/si';
+import { SiGoogleanalytics } from 'react-icons/si';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const PaymentMethods = ({ onClose, isVisible }) => {
+const AccountSettings = () => {
+  // State to manage visibility of the component
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Function to toggle visibility
+  const toggleVisibility = () => {
+    setIsVisible(prev => !prev);
+  };
+
   return (
-    <AnimatePresence>
-      {isVisible && (
-        <motion.div
-          initial={{ x: '100%' }}
-          animate={{ x: 0 }}
-          exit={{ x: '100%' }}
-          transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-          className='fixed inset-0 h-full bg-gray-900/95 backdrop-blur-lg p-6 flex flex-col overflow-hidden z-50'
-        >
-          {/* Back Button */}
-          <button
-            onClick={onClose}
-            className='absolute top-6 left-6 text-gray-300 transition-colors bg-gray-800/50 rounded-full p-3 hover:bg-gray-700/70'
+    <div className='h-screen bg-gray-900 text-white p-6'>
+      {/* Button to Open Account Settings */}
+      <button
+        onClick={toggleVisibility}
+        className='bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors'
+      >
+        Open Account Settings
+      </button>
+
+      {/* Render AccountSettings Component */}
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={{ x: '100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '100%' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+            className='fixed inset-0 h-full bg-gray-900/95 backdrop-blur-lg p-6 flex flex-col overflow-hidden z-50'
           >
-            <FaChevronLeft className='text-xl' />
-          </button>
+            {/* Back Button */}
+            <button
+              onClick={toggleVisibility}
+              className='absolute top-6 left-6 text-gray-300 transition-colors bg-gray-800/50 rounded-full p-3 hover:bg-gray-700/70'
+            >
+              <FaChevronLeft className='text-xl' />
+            </button>
 
-          {/* Header */}
-          <h2 className='text-4xl font-bold text-white mb-8 text-center'>Payment Methods</h2>
+            {/* Header */}
+            <h2 className='text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-8 text-center'>
+              Account Settings
+            </h2>
 
-          {/* Main Content */}
-          <div className='flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto'>
-            {/* Left Column */}
-            <div className='space-y-6'>
-              {/* Add Payment Method Section */}
-              <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4'>Add Payment Method</h3>
-                <input
-                  type='text'
-                  placeholder='Card Number'
-                  className='w-full bg-gray-700/50 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4'
-                />
-                <div className='grid grid-cols-2 gap-4 mb-4'>
-                  <input
-                    type='text'
-                    placeholder='Expiry Date'
-                    className='w-full bg-gray-700/50 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-                  />
-                  <input
-                    type='text'
-                    placeholder='CVV'
-                    className='w-full bg-gray-700/50 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
-                  />
-                </div>
-                <button className='w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors'>
-                  Add Card
-                </button>
-              </div>
-
-              {/* Saved Payment Methods */}
-              <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4'>Saved Payment Methods</h3>
-                <div className='space-y-4'>
-                  {/* Card 1 */}
-                  <div className='flex items-center justify-between bg-gray-700/50 rounded-lg p-4'>
-                    <div className='flex items-center space-x-4'>
-                      <FaCreditCard className='text-2xl text-blue-500' />
-                      <div>
-                        <p className='text-white font-semibold'>Visa ending in 1234</p>
-                        <p className='text-gray-400 text-sm'>Expires 12/25</p>
-                      </div>
-                    </div>
-                    <button className='text-gray-300 hover:text-white transition-colors'>
-                      Edit
-                    </button>
-                  </div>
-
-                  {/* Card 2 */}
-                  <div className='flex items-center justify-between bg-gray-700/50 rounded-lg p-4'>
-                    <div className='flex items-center space-x-4'>
-                      <FaCreditCard className='text-2xl text-purple-500' />
-                      <div>
-                        <p className='text-white font-semibold'>Mastercard ending in 5678</p>
-                        <p className='text-gray-400 text-sm'>Expires 10/24</p>
-                      </div>
-                    </div>
-                    <button className='text-gray-300 hover:text-white transition-colors'>
-                      Edit
+            {/* Main Content */}
+            <div className='flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 overflow-y-auto'>
+              {/* Left Column */}
+              <div className='space-y-6'>
+                {/* Profile Information */}
+                <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
+                    <FaUserCircle className='text-2xl text-blue-500' />
+                    <span>Profile Information</span>
+                  </h3>
+                  <div className='space-y-4'>
+                    <input
+                      type='text'
+                      placeholder='Full Name'
+                      className='w-full bg-gray-700/50 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
+                    <input
+                      type='email'
+                      placeholder='Email Address'
+                      className='w-full bg-gray-700/50 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
+                    <input
+                      type='tel'
+                      placeholder='Phone Number'
+                      className='w-full bg-gray-700/50 rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500'
+                    />
+                    <button className='w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors'>
+                      Save Changes
                     </button>
                   </div>
                 </div>
+
+                {/* Security Settings */}
+                <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
+                    <FaLock className='text-2xl text-green-500' />
+                    <span>Security Settings</span>
+                  </h3>
+                  <div className='space-y-4'>
+                    <button className='w-full bg-green-600 text-white p-3 rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-2'>
+                      <FaLock className='text-lg' /> Change Password
+                    </button>
+                    <button className='w-full bg-yellow-600 text-white p-3 rounded-lg hover:bg-yellow-700 transition-colors flex items-center justify-center gap-2'>
+                      <FaShieldAlt className='text-lg' /> Enable Two-Factor Authentication
+                    </button>
+                  </div>
+                </div>
+
+                {/* Activity History */}
+                <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
+                    <FaHistory className='text-2xl text-yellow-500' />
+                    <span>Activity History</span>
+                  </h3>
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between bg-gray-700/50 rounded-lg p-4'>
+                      <div>
+                        <p className='text-white font-semibold'>Logged in from New Device</p>
+                        <p className='text-gray-400 text-sm'>12 Oct 2023</p>
+                      </div>
+                    </div>
+                    <div className='flex items-center justify-between bg-gray-700/50 rounded-lg p-4'>
+                      <div>
+                        <p className='text-white font-semibold'>Updated Profile Picture</p>
+                        <p className='text-gray-400 text-sm'>10 Oct 2023</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
 
-              {/* Payment History */}
-              <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
-                  <FaHistory className='text-2xl text-yellow-500' />
-                  <span>Payment History</span>
-                </h3>
-                <div className='space-y-4'>
-                  <div className='flex items-center justify-between bg-gray-700/50 rounded-lg p-4'>
-                    <div>
-                      <p className='text-white font-semibold'>Netflix Subscription</p>
-                      <p className='text-gray-400 text-sm'>12 Oct 2023</p>
+              {/* Right Column */}
+              <div className='space-y-6'>
+                {/* Notifications */}
+                <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
+                    <FaBell className='text-2xl text-teal-500' />
+                    <span>Notifications</span>
+                  </h3>
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between'>
+                      <p className='text-gray-400'>Email Notifications</p>
+                      <label className='relative inline-flex items-center cursor-pointer'>
+                        <input type='checkbox' className='sr-only peer' defaultChecked />
+                        <div className='w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600'></div>
+                      </label>
                     </div>
-                    <p className='text-red-500 font-semibold'>-$15.99</p>
+                    <div className='flex items-center justify-between'>
+                      <p className='text-gray-400'>Push Notifications</p>
+                      <label className='relative inline-flex items-center cursor-pointer'>
+                        <input type='checkbox' className='sr-only peer' />
+                        <div className='w-11 h-6 bg-gray-700 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-blue-500 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[""] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600'></div>
+                      </label>
+                    </div>
                   </div>
-                  <div className='flex items-center justify-between bg-gray-700/50 rounded-lg p-4'>
-                    <div>
-                      <p className='text-white font-semibold'>Spotify Subscription</p>
-                      <p className='text-gray-400 text-sm'>10 Oct 2023</p>
+                </div>
+
+                {/* Analytics */}
+                <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
+                    <SiGoogleanalytics className='text-2xl text-purple-500' />
+                    <span>Account Analytics</span>
+                  </h3>
+                  <div className='space-y-4'>
+                    <div className='flex items-center justify-between'>
+                      <p className='text-gray-400'>Total Logins</p>
+                      <p className='text-white font-semibold'>125</p>
                     </div>
-                    <p className='text-red-500 font-semibold'>-$9.99</p>
+                    <div className='flex items-center justify-between'>
+                      <p className='text-gray-400'>Active Sessions</p>
+                      <p className='text-white font-semibold'>3</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Promotional Banner */}
+                <div className='bg-gradient-to-r from-green-500 to-teal-500 rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4'>Upgrade Your Plan!</h3>
+                  <p className='text-gray-200 mb-4'>
+                    Unlock premium features by upgrading to our Pro plan today.
+                  </p>
+                  <button className='w-full bg-white text-green-600 p-3 rounded-lg hover:bg-gray-100 transition-colors'>
+                    Upgrade Now
+                  </button>
+                </div>
+
+                {/* Supported Features */}
+                <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
+                  <h3 className='text-xl font-semibold text-white mb-4'>Supported Features</h3>
+                  <div className='flex items-center justify-around'>
+                    <FaEnvelope className='text-4xl text-blue-500' />
+                    <FaPhone className='text-4xl text-green-500' />
+                    <FaBell className='text-4xl text-teal-500' />
+                    <FaLock className='text-4xl text-red-500' />
                   </div>
                 </div>
               </div>
             </div>
-
-            {/* Right Column */}
-            <div className='space-y-6'>
-              {/* Balance Overview */}
-              <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4 flex items-center space-x-2'>
-                  <FaWallet className='text-2xl text-green-500' />
-                  <span>Balance Overview</span>
-                </h3>
-                <div className='space-y-4'>
-                  <div className='flex items-center justify-between'>
-                    <p className='text-gray-400'>Total Balance</p>
-                    <p className='text-white font-semibold'>$1,250.00</p>
-                  </div>
-                  <div className='flex items-center justify-between'>
-                    <p className='text-gray-400'>Available Credit</p>
-                    <p className='text-white font-semibold'>$5,000.00</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Other Payment Options */}
-              <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4'>Other Payment Options</h3>
-                <div className='grid grid-cols-2 gap-4'>
-                  {/* PayPal */}
-                  <button className='flex items-center justify-center space-x-2 bg-gray-700/50 rounded-lg p-4 hover:bg-gray-600/70 transition-colors'>
-                    <FaPaypal className='text-2xl text-blue-500' />
-                    <span className='text-white'>PayPal</span>
-                  </button>
-
-                  {/* Apple Pay */}
-                  <button className='flex items-center justify-center space-x-2 bg-gray-700/50 rounded-lg p-4 hover:bg-gray-600/70 transition-colors'>
-                    <FaApplePay className='text-2xl text-gray-100' />
-                    <span className='text-white'>Apple Pay</span>
-                  </button>
-
-                  {/* Google Pay */}
-                  <button className='flex items-center justify-center space-x-2 bg-gray-700/50 rounded-lg p-4 hover:bg-gray-600/70 transition-colors'>
-                    <FaGooglePay className='text-2xl text-green-500' />
-                    <span className='text-white'>Google Pay</span>
-                  </button>
-
-                  {/* Bitcoin */}
-                  <button className='flex items-center justify-center space-x-2 bg-gray-700/50 rounded-lg p-4 hover:bg-gray-600/70 transition-colors'>
-                    <FaBitcoin className='text-2xl text-orange-500' />
-                    <span className='text-white'>Bitcoin</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Promotional Banner */}
-              <div className='bg-gradient-to-r from-blue-600 to-purple-600 rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4'>Get 10% Cashback!</h3>
-                <p className='text-gray-200 mb-4'>
-                  Use code <span className='font-bold'>PAY10</span> for instant cashback on your
-                  next payment.
-                </p>
-                <button className='w-full bg-white text-blue-600 p-3 rounded-lg hover:bg-gray-100 transition-colors'>
-                  Apply Code
-                </button>
-              </div>
-
-              {/* Supported Payment Icons */}
-              <div className='bg-gray-800/70 backdrop-blur-sm rounded-lg p-6'>
-                <h3 className='text-xl font-semibold text-white mb-4'>Supported Payment Methods</h3>
-                <div className='flex items-center justify-around'>
-                  <SiVisa className='text-4xl text-blue-500' />
-                  <SiMastercard className='text-4xl text-red-500' />
-                  <SiStripe className='text-4xl text-purple-500' />
-                  <FaPaypal className='text-4xl text-blue-500' />
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-      )}
-    </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
 
-export default PaymentMethods;
+export default AccountSettings;

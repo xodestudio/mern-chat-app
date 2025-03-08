@@ -19,7 +19,6 @@ import {
   FaYoutube,
   FaTiktok
 } from 'react-icons/fa';
-import persistor from '../redux/store';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -69,7 +68,6 @@ const Profile = ({ onClose }) => {
 
   // Handle Logout
   const handleLogout = async () => {
-    persistor.purge();
     try {
       const token = Cookies.get('accessToken');
 
@@ -311,7 +309,7 @@ const Profile = ({ onClose }) => {
               {/* Payment Methods */}
               <div
                 className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                // onClick={() => setActiveComponent('paymentMethods')}
+                onClick={() => setActiveComponent('paymentMethods')}
               >
                 <div className='p-3 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition duration-300'>
                   <FaCreditCard className='text-blue-400 text-2xl' />

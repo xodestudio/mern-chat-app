@@ -29,6 +29,7 @@ const Dashboard = () => {
   const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const { authUser, otherUsers, selectedUsers, onlineUsers } = useSelector(store => store.user);
 
   const dispatch = useDispatch();
@@ -42,6 +43,11 @@ const Dashboard = () => {
     if (!message) return '';
     return message.length > maxLength ? `${message.slice(0, maxLength)}...` : message;
   };
+
+  // Filter users based on search query
+  const filteredUsers = otherUsers.filter(user =>
+    user.username.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useGetMessages();
   useGetOtherUsers();
@@ -156,7 +162,7 @@ const Dashboard = () => {
         ref={sidebarRef}
         className={`fixed inset-y-0 left-0 w-64 bg-gray-800 border-r border-gray-700 transform transition-transform duration-300 ease-in-out z-20 ${
           isSidebarVisible ? 'translate-x-0' : '-translate-x-full'
-        } md:translate-x-0 md:relative md:w-1/4 lg:w-1/5 xl:w-1/6`}
+        } md:translate-x-0 md:relative xl:w-1/6`}
       >
         <div className='p-4 md:p-6 flex justify-between items-center border-b border-gray-700'>
           <h1 className='text-xl md:text-2xl font-bold text-white'>Messenger</h1>
@@ -173,15 +179,17 @@ const Dashboard = () => {
             <input
               type='text'
               placeholder='Search...'
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
               className='flex-1 bg-transparent text-sm md:text-base text-white focus:outline-none'
             />
           </div>
         </div>
 
         {/* Chat List */}
-        <div className='overflow-y-auto h-[calc(100vh-280px)] md:h-[calc(100vh-320px)] scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 modern-scrollbar'>
-          {otherUsers && otherUsers.length > 0 ? (
-            otherUsers.map(user => (
+        <div className='flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-900 modern-scrollbar max-h-[calc(100vh-200px)]'>
+          {filteredUsers && filteredUsers.length > 0 ? (
+            filteredUsers.map(user => (
               <div
                 key={user._id}
                 onClick={() => selectedUserHandler(user)}
@@ -193,15 +201,13 @@ const Dashboard = () => {
                   <img
                     src={user.avatar}
                     alt='Avatar'
-                    className='w-10 h-10 md:w-12 md:h-12 rounded-full border-2 border-gray-700'
+                    className='w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border-2 border-gray-700'
                   />
-
                   {user.unreadMessagesCount > 0 && (
                     <div className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center'>
                       {user.unreadMessagesCount}
                     </div>
                   )}
-
                   {onlineUsers?.includes(user._id.trim()) ? (
                     <div className='absolute top-0 right-0 w-3 h-3 md:w-4 md:h-4 bg-green-500 rounded-full border-2 border-gray-900'></div>
                   ) : null}
