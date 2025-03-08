@@ -306,7 +306,6 @@ const editUser = asyncHandler(async (req, res) => {
 
   const files = req.files || {};
   if (files.avatar) {
-    console.log("files", files.avatar);
     updateData.avatar = await uploadImage(files.avatar[0].path);
   }
   if (files.coverPhoto) {

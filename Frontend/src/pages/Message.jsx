@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Message = ({ message, isLoggedInUser, senderAvatar }) => {
   return (
     <div className={`flex ${isLoggedInUser ? 'justify-end' : 'justify-start'} space-x-2 mb-4`}>
@@ -26,11 +24,13 @@ const Message = ({ message, isLoggedInUser, senderAvatar }) => {
 
         {/* Message Time */}
         <span className='text-xs text-gray-400 mt-1'>
-          {new Date(message?.createdAt).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true // Enable 12-hour format
-          })}
+          {message?.createdAt
+            ? new Date(message.createdAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+              })
+            : 'Invalid Date'}
         </span>
       </div>
 

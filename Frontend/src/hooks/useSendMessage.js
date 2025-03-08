@@ -20,7 +20,8 @@ const useSendMessage = () => {
         const newMessage = {
           senderId: authUser.data.user._id,
           receiverId: selectedUsers._id,
-          message
+          message,
+          createdAt: new Date().toISOString()
         };
 
         // Send message via socket
