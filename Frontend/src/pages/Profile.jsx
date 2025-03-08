@@ -19,6 +19,7 @@ import {
   FaYoutube,
   FaTiktok
 } from 'react-icons/fa';
+import persistor from '../redux/store';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
@@ -68,6 +69,7 @@ const Profile = ({ onClose }) => {
 
   // Handle Logout
   const handleLogout = async () => {
+    persistor.purge();
     try {
       const token = Cookies.get('accessToken');
 

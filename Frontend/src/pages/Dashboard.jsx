@@ -36,7 +36,6 @@ const Dashboard = () => {
   const sidebarRef = useRef(null);
   const sendMessage = useSendMessage();
   const { messages } = useSelector(store => store.message);
-  console.log('Messages in Redux:', messages);
   const socket = useSocket(authUser?.data?.user?._id);
 
   const truncateMessage = (message, maxLength) => {

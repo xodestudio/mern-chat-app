@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { REHYDRATE } from 'redux-persist';
 
 const initialState = {
   authUser: null,
@@ -30,6 +31,11 @@ export const userSlice = createSlice({
       state.onlineUsers = [];
       localStorage.removeItem('user');
     }
+  },
+  extraReducers: builder => {
+    builder.addCase(REHYDRATE, state => {
+      state.selectedUsers = null; // Reset selectedUsers on rehydration
+    });
   }
 });
 
