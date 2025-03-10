@@ -8,7 +8,7 @@ const DefaultHomePage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      className='flex flex-col items-center justify-start text-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 overflow-hidden h-screen mt-8'
+      className='flex flex-col items-center justify-start text-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 overflow-hidden h-screen'
     >
       {/* Custom SVG Illustration */}
       <motion.div
