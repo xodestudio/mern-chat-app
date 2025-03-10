@@ -28,40 +28,12 @@ const storage = multer.diskStorage({
   },
 });
 
-// File filter function to allow various file types (e.g., images, PDFs, videos)
-const fileFilter = (req, file, cb) => {
-  const allowedTypes = [
-    "image/avif",
-    "image/jpg",
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "application/pdf",
-    "video/mp4",
-    "video/avi",
-    "video/mkv",
-  ];
-
-  if (allowedTypes.includes(file.mimetype)) {
-    cb(null, true); // Accept file
-  } else {
-    cb(
-      new Error(
-        "Invalid file type. Only images, PDFs, and videos are allowed."
-      ),
-      false
-    ); // Reject file
-  }
-};
-
 // Multer instance with storage, limits, and file filter
 const upload = multer({
   storage,
   limits: {
     fileSize: 50 * 1024 * 1024, // Limit file size to 50MB
   },
-  fileFilter,
 });
 
 // Custom error handling middleware for upload

@@ -3,6 +3,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";
+import { uploadImage } from "../utils/cloudinary.js";
 
 const sendMessage = asyncHandler(async (req, res) => {
   const senderId = req.user?._id;
@@ -18,8 +19,10 @@ const sendMessage = asyncHandler(async (req, res) => {
 
   const { message } = req.body;
 
-  if (!message || message.trim() === "") {
-    throw new ApiError(400, "Bad Request: Message content is required");
+  const files = req.files || {};
+
+  if ((!message || message.trim() === "") && !files.file) {
+    throw new ApiError(400, "Bad Request: Message or file is required");
   }
 
   let gotConversation = await Conversation.findOne({
@@ -33,10 +36,17 @@ const sendMessage = asyncHandler(async (req, res) => {
     });
   }
 
+  // Upload file to Cloudinary if present
+  let fileUrl = null;
+  if (files.file) {
+    fileUrl = await uploadImage(files.file[0].path);
+  }
+
   const newMessage = await Message.create({
     senderId,
     receiverId,
-    message: message.trim(),
+    message: message ? message.trim() : null,
+    file: fileUrl,
   });
 
   if (newMessage) {
@@ -90,7 +100,7 @@ const getMessage = asyncHandler(async (req, res) => {
   // Get the latest message
   const latestMessage =
     conversation.messages.length > 0
-      ? conversation.messages[conversation.messages.length - 1].message
+      ? conversation.messages[conversation.messages.length - 1]
       : null;
 
   // Return the conversation data
@@ -98,9 +108,27 @@ const getMessage = asyncHandler(async (req, res) => {
     new ApiResponse(
       200,
       {
-        messages: conversation.messages,
+        messages: conversation.messages.map((msg) => ({
+          _id: msg._id,
+          senderId: msg.senderId,
+          receiverId: msg.receiverId,
+          message: msg.message,
+          file: msg.file, // Include file URL
+          isRead: msg.isRead,
+          createdAt: msg.createdAt,
+        })),
         unreadMessagesCount,
-        latestMessage,
+        latestMessage: latestMessage
+          ? {
+              _id: latestMessage._id,
+              senderId: latestMessage.senderId,
+              receiverId: latestMessage.receiverId,
+              message: latestMessage.message,
+              file: latestMessage.file,
+              isRead: latestMessage.isRead,
+              createdAt: latestMessage.createdAt,
+            }
+          : null,
       },
       "Message fetched successfully"
     )
@@ -124,13 +152,21 @@ const markMessagesAsRead = asyncHandler(async (req, res) => {
   });
 
   if (!conversation) {
-    throw new ApiError(404, "No conversation found between these users");
+    return res
+      .status(200)
+      .json(
+        new ApiResponse(
+          200,
+          { updatedMessagesCount: 0 },
+          "No unread messages to mark as read."
+        )
+      );
   }
 
   // Mark all unread messages sent to the senderId as read
-  await Message.updateMany(
+  const updatedMessages = await Message.updateMany(
     {
-      senderId: receiverId,
+      _id: { $in: conversation.messages },
       receiverId: senderId,
       isRead: false,
     },
@@ -139,7 +175,13 @@ const markMessagesAsRead = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, {}, "Messages marked as read"));
+    .json(
+      new ApiResponse(
+        200,
+        { updatedMessagesCount: updatedMessages.modifiedCount },
+        "Messages marked as read successfully."
+      )
+    );
 });
 
 export { sendMessage, getMessage, markMessagesAsRead };

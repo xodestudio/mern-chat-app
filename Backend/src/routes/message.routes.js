@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { upload, handleUploadError } from "../middlewares/multer.middleware.js";
 import {
   sendMessage,
   getMessage,
@@ -8,7 +9,14 @@ import {
 
 const router = Router();
 
-router.route("/send-message/:id").post(verifyJWT, sendMessage);
+router
+  .route("/send-message/:id")
+  .post(
+    verifyJWT,
+    upload.fields([{ name: "file", maxCount: 1 }]),
+    handleUploadError,
+    sendMessage
+  );
 router.route("/get-message/:id").post(verifyJWT, getMessage);
 router.route("/mark-messages-as-read/:id").post(verifyJWT, markMessagesAsRead);
 

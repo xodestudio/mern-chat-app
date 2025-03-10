@@ -12,7 +12,9 @@ const messageSchema = new mongoose.Schema(
     },
     message: {
       type: String,
-      required: true,
+    },
+    file: {
+      type: String,
     },
     isRead: {
       type: Boolean,
