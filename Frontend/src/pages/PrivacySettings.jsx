@@ -1,8 +1,8 @@
 import React from 'react';
-import { FaLock, FaChevronLeft } from 'react-icons/fa';
-import { AiOutlineEye, AiOutlineInfoCircle } from 'react-icons/ai';
-import { BsShieldLock, BsChatSquareText, BsCheckCircleFill } from 'react-icons/bs';
-import { MdOutlineSecurityUpdateGood } from 'react-icons/md';
+import { FaLock, FaChevronLeft } from 'react-icons/fa'; // Font Awesome icons
+import { AiOutlineEye, AiOutlineInfoCircle } from 'react-icons/ai'; // Ant Design icons
+import { BsShieldLock, BsChatSquareText, BsCheckCircleFill } from 'react-icons/bs'; // Bootstrap icons
+import { MdOutlineSecurityUpdateGood } from 'react-icons/md'; // Material Design icons
 import { motion } from 'framer-motion';
 
 const PrivacySettings = ({ onClose }) => {

@@ -8,11 +8,11 @@ const DefaultHomePage = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      className='flex flex-col items-center justify-center text-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 overflow-hidden h-screen'
+      className='flex flex-col items-center justify-start text-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700 overflow-hidden h-screen mt-8'
     >
       {/* Custom SVG Illustration */}
       <motion.div
-        className='w-48 sm:w-64 md:w-80 mb-4 sm:mb-6 animate-float'
+        className='w-24 sm:w-36 md:w-48 mb-3 sm:mb-5 animate-float'
         whileHover={{ scale: 1.05 }}
         transition={{ duration: 0.3 }}
       >
@@ -32,7 +32,7 @@ const DefaultHomePage = () => {
 
       {/* Welcome Heading */}
       <motion.h1
-        className='text-3xl sm:text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-3 sm:mb-4 animate-fade-in'
+        className='text-2xl sm:text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500 mb-2 sm:mb-3 animate-fade-in'
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2 }}
@@ -42,7 +42,7 @@ const DefaultHomePage = () => {
 
       {/* Subheading */}
       <motion.p
-        className='text-base sm:text-lg md:text-xl text-gray-400 mb-6 sm:mb-8 animate-fade-in max-w-2xl text-center'
+        className='text-xs sm:text-sm md:text-base text-gray-400 mb-4 sm:mb-6 animate-fade-in max-w-xl text-center px-4 sm:px-0'
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.4 }}
@@ -53,64 +53,64 @@ const DefaultHomePage = () => {
 
       {/* Features Section */}
       <motion.div
-        className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 w-full max-w-6xl px-4 sm:px-6'
+        className='grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3 w-full max-w-5xl px-4'
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, delay: 0.6 }}
       >
         {/* Feature 1: Chat */}
         <motion.div
-          className='p-4 sm:p-6 bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 text-center'
+          className='p-3 sm:p-4 bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 text-center'
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
         >
           <div className='flex justify-center'>
-            <div className='p-3 sm:p-4 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full'>
-              <FaComments className='text-2xl sm:text-3xl text-white' />
+            <div className='p-2 sm:p-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full'>
+              <FaComments className='text-base sm:text-lg md:text-xl text-white' />
             </div>
           </div>
-          <h2 className='text-lg sm:text-xl font-semibold text-white mt-3 sm:mt-4'>
+          <h2 className='text-sm sm:text-base md:text-lg font-semibold text-white mt-2 sm:mt-3'>
             Real-Time Chat
           </h2>
-          <p className='text-sm sm:text-base text-gray-400 mt-2'>
+          <p className='text-[10px] sm:text-xs md:text-sm text-gray-400 mt-1'>
             Enjoy instant messaging with friends and colleagues.
           </p>
         </motion.div>
 
         {/* Feature 2: Connect */}
         <motion.div
-          className='p-4 sm:p-6 bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 text-center'
+          className='p-3 sm:p-4 bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 text-center'
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
         >
           <div className='flex justify-center'>
-            <div className='p-3 sm:p-4 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full'>
-              <FaUserFriends className='text-2xl sm:text-3xl text-white' />
+            <div className='p-2 sm:p-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-full'>
+              <FaUserFriends className='text-base sm:text-lg md:text-xl text-white' />
             </div>
           </div>
-          <h2 className='text-lg sm:text-xl font-semibold text-white mt-3 sm:mt-4'>
+          <h2 className='text-sm sm:text-base md:text-lg font-semibold text-white mt-2 sm:mt-3'>
             Connect Easily
           </h2>
-          <p className='text-sm sm:text-base text-gray-400 mt-2'>
+          <p className='text-[10px] sm:text-xs md:text-sm text-gray-400 mt-1'>
             Find and connect with your friends effortlessly.
           </p>
         </motion.div>
 
         {/* Feature 3: Fast */}
         <motion.div
-          className='p-4 sm:p-6 bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 text-center'
+          className='p-3 sm:p-4 bg-gray-800 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300 text-center'
           whileHover={{ scale: 1.05 }}
           transition={{ duration: 0.3 }}
         >
           <div className='flex justify-center'>
-            <div className='p-3 sm:p-4 bg-gradient-to-r from-green-500 to-teal-500 rounded-full'>
-              <FaRocket className='text-2xl sm:text-3xl text-white' />
+            <div className='p-2 sm:p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-full'>
+              <FaRocket className='text-base sm:text-lg md:text-xl text-white' />
             </div>
           </div>
-          <h2 className='text-lg sm:text-xl font-semibold text-white mt-3 sm:mt-4'>
+          <h2 className='text-sm sm:text-base md:text-lg font-semibold text-white mt-2 sm:mt-3'>
             Lightning Fast
           </h2>
-          <p className='text-sm sm:text-base text-gray-400 mt-2'>
+          <p className='text-[10px] sm:text-xs md:text-sm text-gray-400 mt-1'>
             Experience blazing-fast messaging with no delays.
           </p>
         </motion.div>

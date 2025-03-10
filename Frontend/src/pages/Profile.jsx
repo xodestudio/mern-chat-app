@@ -118,7 +118,7 @@ const Profile = ({ onClose }) => {
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className='relative mb-8 w-full h-64 rounded-3xl overflow-hidden bg-cover bg-center shadow-2xl'
+              className='relative w-full h-72 rounded-t-3xl overflow-hidden bg-cover bg-center shadow-2xl'
               style={{
                 backgroundImage: `url(${
                   authUser?.data?.user?.coverPhoto ||
@@ -129,12 +129,12 @@ const Profile = ({ onClose }) => {
               {/* Close Icon */}
               <button
                 onClick={onClose}
-                className='absolute top-4 right-4 text-gray-300 hover:text-white transition-colors bg-gray-800/50 rounded-full p-2 shadow-lg'
+                className='absolute top-6 right-6 text-gray-300 hover:text-white transition-colors bg-gray-800/50 rounded-full p-3 shadow-lg'
               >
                 <FaTimes className='text-xl' />
               </button>
               {/* Profile Image */}
-              <div className='absolute bottom-2 left-6 w-40 h-40 rounded-full overflow-hidden border-4 border-pink-400 shadow-lg bg-white'>
+              <div className='absolute bottom-[-50px] left-1/2 transform -translate-x-1/2 w-40 h-40 rounded-full overflow-hidden border-4 border-pink-400 shadow-lg bg-white'>
                 <img
                   src={authUser?.data?.user?.avatar}
                   alt='Profile'
@@ -143,232 +143,245 @@ const Profile = ({ onClose }) => {
               </div>
             </motion.div>
 
-            {/* Name and Email */}
+            {/* Profile Content */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className='mb-8 flex items-center justify-center w-full px-6'
+              className='w-full px-4 sm:px-6 py-10 bg-gray-900/70 rounded-b-3xl backdrop-blur-xl border-t border-gray-700 shadow-2xl relative overflow-hidden'
             >
-              <div className='w-full max-w-5xl p-10 bg-gray-900/60 rounded-3xl backdrop-blur-xl border-2 border-gray-700 shadow-2xl shadow-blue-500/30 relative overflow-hidden flex flex-col items-center'>
-                {/* Profile Header */}
-                <div className='w-full flex justify-between items-center px-6'>
-                  <div className='text-left'>
-                    <h2 className='text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500'>
-                      {authUser?.data?.user?.fullName}
-                    </h2>
-                    <p className='text-xl text-gray-300 font-medium'>
-                      @{authUser?.data?.user?.username}
-                    </p>
-                  </div>
-                  {/* Social Media Icons */}
-                  <div className='flex space-x-4 text-4xl text-white'>
-                    {[
-                      FaFacebook,
-                      FaTwitter,
-                      FaInstagram,
-                      FaLinkedin,
-                      FaGithub,
-                      FaYoutube,
-                      FaTiktok
-                    ].map((Icon, index) => (
-                      <motion.a
-                        key={index}
-                        href='#'
-                        whileHover={{ rotate: 10 }}
-                        className='hover:text-blue-400 transition duration-300 transform'
-                      >
-                        <Icon />
-                      </motion.a>
-                    ))}
-                  </div>
-                </div>
-                {/* Description */}
-                <p className='text-sm text-gray-400 italic max-w-lg mt-4 text-center'>
+              {/* User Details */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.4 }}
+                className='text-center mb-8'
+              >
+                <h2 className='text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500'>
+                  {authUser?.data?.user?.fullName}
+                </h2>
+                <p className='text-lg sm:text-xl text-gray-300 font-medium mt-2'>
+                  @{authUser?.data?.user?.username}
+                </p>
+                <p className='text-sm sm:text-base text-gray-400 italic mt-2'>
                   🚀 Passionate Developer | Tech Enthusiast | Innovator | Content Creator 🎥 | AI
                   Explorer | Open Source Contributor
                 </p>
-                {/* Stats Section */}
-                <div className='flex justify-center space-x-10 mt-6 text-gray-300 w-full'>
-                  <motion.div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
-                    <p className='text-3xl font-bold text-white'>1.2K</p>
-                    <p className='text-sm uppercase tracking-wider'>Followers</p>
-                  </motion.div>
-                  <motion.div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
-                    <p className='text-3xl font-bold text-white'>320</p>
-                    <p className='text-sm uppercase tracking-wider'>Posts</p>
-                  </motion.div>
-                  <motion.div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
-                    <p className='text-3xl font-bold text-white'>85</p>
-                    <p className='text-sm uppercase tracking-wider'>Projects</p>
-                  </motion.div>
-                  <motion.div className='text-center bg-gray-800/50 p-4 rounded-xl border border-gray-600 w-40'>
-                    <p className='text-3xl font-bold text-white'>15</p>
-                    <p className='text-sm uppercase tracking-wider'>Years Exp</p>
-                  </motion.div>
-                </div>
-                {/* Animated Border Effect */}
-                <div className='absolute inset-0 w-full h-full bg-gradient-to-r from-[rgb(74,90,85)] via-[rgb(84,90,161)] to-[rgb(70,62,125)] opacity-30 blur-2xl'></div>
-              </div>
-            </motion.div>
-
-            {/* Grid Layout for Buttons */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className='grid grid-cols-1 sm:grid-cols-2 gap-5 animate-fadeIn'
-            >
-              {/* Edit Profile */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={() => setActiveComponent('editProfile')}
-              >
-                <div className='p-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg group-hover:from-blue-600 group-hover:to-cyan-600 transition duration-300'>
-                  <FaUserEdit className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Edit Profile</span>
-                  <p className='text-sm text-gray-300'>Update your personal information</p>
-                </div>
-                <FaChevronRight className='ml-auto text-gray-400 text-xl' />
               </motion.div>
 
-              {/* Privacy Settings */}
+              {/* Social Media Icons */}
               <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={() => setActiveComponent('privacySettings')}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+                className='flex flex-wrap justify-center gap-6 sm:gap-8 text-white mb-8'
               >
-                <div className='p-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg group-hover:from-purple-600 group-hover:to-indigo-600 transition duration-300'>
-                  <FaLock className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Privacy Settings</span>
-                  <p className='text-sm text-gray-300'>Manage your privacy preferences</p>
-                </div>
-                <FaChevronRight className='ml-auto text-gray-400 text-xl' />
-              </motion.div>
-
-              {/* Dark Mode Toggle */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={toggleDarkMode}
-              >
-                <div className='p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg group-hover:from-yellow-600 group-hover:to-orange-600 transition duration-300'>
-                  {darkMode ? (
-                    <FaMoon className='text-white text-2xl' />
-                  ) : (
-                    <FaSun className='text-white text-2xl' />
-                  )}
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>
-                    {darkMode ? 'Dark Mode' : 'Light Mode'}
-                  </span>
-                  <p className='text-sm text-gray-300'>Switch between dark and light themes</p>
-                </div>
-                <div className='ml-auto'>
-                  <div
-                    className={`w-12 h-6 flex items-center rounded-full p-1 ${
-                      darkMode ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : 'bg-gray-500'
-                    }`}
+                {[
+                  { Icon: FaFacebook, color: '#1877F2' },
+                  { Icon: FaTwitter, color: '#1DA1F2' },
+                  {
+                    Icon: FaInstagram,
+                    color: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)'
+                  },
+                  { Icon: FaLinkedin, color: '#0A66C2' },
+                  { Icon: FaGithub, color: '#171515' },
+                  { Icon: FaYoutube, color: '#FF0000' },
+                  { Icon: FaTiktok, color: 'linear-gradient(45deg, #000, #666)' }
+                ].map(({ Icon, color }, index) => (
+                  <motion.a
+                    key={index}
+                    href='#'
+                    whileHover={{
+                      boxShadow: color.includes('gradient')
+                        ? `0 0 15px ${color}`
+                        : `0 0 15px ${color}`,
+                      borderColor: color
+                    }}
+                    transition={{ duration: 0.3 }}
+                    className={`relative w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center bg-transparent border-2 border-white rounded-full shadow-lg overflow-hidden group`}
+                    style={{
+                      boxShadow: '0 0 10px rgba(255, 255, 255, 0.5)'
+                    }}
                   >
-                    <div
-                      className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                        darkMode ? 'translate-x-6' : 'translate-x-0'
-                      }`}
-                    ></div>
+                    {/* Icon */}
+                    <Icon
+                      className={`text-2xl sm:text-3xl text-white transition duration-300`}
+                      style={{
+                        background: color.includes('gradient') ? color : undefined,
+                        WebkitBackgroundClip: color.includes('gradient') ? 'text' : undefined,
+                        backgroundClip: color.includes('gradient') ? 'text' : undefined
+                      }}
+                    />
+
+                    {/* Platform-Specific Glow Effect */}
+                    <motion.div
+                      className='absolute inset-0 w-full h-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-md'
+                      style={{
+                        background: color.includes('gradient') ? color : undefined
+                      }}
+                    ></motion.div>
+                  </motion.a>
+                ))}
+              </motion.div>
+
+              {/* Grid Layout for Buttons */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.8 }}
+                className='grid grid-cols-1 sm:grid-cols-2 gap-6'
+              >
+                {/* Edit Profile */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={() => setActiveComponent('editProfile')}
+                >
+                  <div className='p-3 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-lg group-hover:from-blue-600 group-hover:to-cyan-600 transition duration-300'>
+                    <FaUserEdit className='text-white text-2xl' />
                   </div>
-                </div>
-              </motion.div>
-
-              {/* Notifications Toggle */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={toggleNotifications}
-              >
-                <div className='p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg group-hover:from-green-600 group-hover:to-teal-600 transition duration-300'>
-                  <FaBell className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Notifications</span>
-                  <p className='text-sm text-gray-300'>Manage your notification preferences</p>
-                </div>
-                <div className='ml-auto'>
-                  <div
-                    className={`w-12 h-6 flex items-center rounded-full p-1 ${
-                      notificationsEnabled
-                        ? 'bg-gradient-to-r from-green-500 to-teal-500'
-                        : 'bg-gray-500'
-                    }`}
-                  >
-                    <div
-                      className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
-                        notificationsEnabled ? 'translate-x-6' : 'translate-x-0'
-                      }`}
-                    ></div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Edit Profile</span>
+                    <p className='text-sm text-gray-300'>Update your personal information</p>
                   </div>
-                </div>
-              </motion.div>
+                  <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                </motion.div>
 
-              {/* Payment Methods */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={() => setActiveComponent('paymentMethods')}
-              >
-                <div className='p-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg group-hover:from-red-600 group-hover:to-pink-600 transition duration-300'>
-                  <FaCreditCard className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Payment Methods</span>
-                  <p className='text-sm text-gray-300'>Manage your payment options</p>
-                </div>
-                <FaChevronRight className='ml-auto text-gray-400 text-xl' />
-              </motion.div>
+                {/* Privacy Settings */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={() => setActiveComponent('privacySettings')}
+                >
+                  <div className='p-3 bg-gradient-to-r from-purple-500 to-indigo-500 rounded-lg group-hover:from-purple-600 group-hover:to-indigo-600 transition duration-300'>
+                    <FaLock className='text-white text-2xl' />
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Privacy Settings</span>
+                    <p className='text-sm text-gray-300'>Manage your privacy preferences</p>
+                  </div>
+                  <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                </motion.div>
 
-              {/* Language Settings */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={() => setActiveComponent('languageSettings')}
-              >
-                <div className='p-3 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg group-hover:from-teal-600 group-hover:to-cyan-600 transition duration-300'>
-                  <FaLanguage className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Language Settings</span>
-                  <p className='text-sm text-gray-300'>Change your preferred language</p>
-                </div>
-                <FaChevronRight className='ml-auto text-gray-400 text-xl' />
-              </motion.div>
+                {/* Dark Mode Toggle */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={toggleDarkMode}
+                >
+                  <div className='p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg group-hover:from-yellow-600 group-hover:to-orange-600 transition duration-300'>
+                    {darkMode ? (
+                      <FaMoon className='text-white text-2xl' />
+                    ) : (
+                      <FaSun className='text-white text-2xl' />
+                    )}
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>
+                      {darkMode ? 'Dark Mode' : 'Light Mode'}
+                    </span>
+                    <p className='text-sm text-gray-300'>Switch between dark and light themes</p>
+                  </div>
+                  <div className='ml-auto'>
+                    <div
+                      className={`w-12 h-6 flex items-center rounded-full p-1 ${
+                        darkMode ? 'bg-gradient-to-r from-yellow-500 to-orange-500' : 'bg-gray-500'
+                      }`}
+                    >
+                      <div
+                        className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
+                          darkMode ? 'translate-x-6' : 'translate-x-0'
+                        }`}
+                      ></div>
+                    </div>
+                  </div>
+                </motion.div>
 
-              {/* Help & Support */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
-                onClick={() => setActiveComponent('helpSupport')}
-              >
-                <div className='p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg group-hover:from-yellow-600 group-hover:to-orange-600 transition duration-300'>
-                  <FaInfoCircle className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Help & Support</span>
-                  <p className='text-sm text-gray-300'>Get assistance and support</p>
-                </div>
-                <FaChevronRight className='ml-auto text-gray-400 text-xl' />
-              </motion.div>
+                {/* Notifications Toggle */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={toggleNotifications}
+                >
+                  <div className='p-3 bg-gradient-to-r from-green-500 to-teal-500 rounded-lg group-hover:from-green-600 group-hover:to-teal-600 transition duration-300'>
+                    <FaBell className='text-white text-2xl' />
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Notifications</span>
+                    <p className='text-sm text-gray-300'>Manage your notification preferences</p>
+                  </div>
+                  <div className='ml-auto'>
+                    <div
+                      className={`w-12 h-6 flex items-center rounded-full p-1 ${
+                        notificationsEnabled
+                          ? 'bg-gradient-to-r from-green-500 to-teal-500'
+                          : 'bg-gray-500'
+                      }`}
+                    >
+                      <div
+                        className={`bg-white w-5 h-5 rounded-full shadow-md transform transition-transform ${
+                          notificationsEnabled ? 'translate-x-6' : 'translate-x-0'
+                        }`}
+                      ></div>
+                    </div>
+                  </div>
+                </motion.div>
 
-              {/* Logout */}
-              <motion.div
-                className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-red-700/70 transition duration-300 group'
-                onClick={handleLogout}
-              >
-                <div className='p-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg group-hover:from-red-600 group-hover:to-pink-600 transition duration-300'>
-                  <FaSignOutAlt className='text-white text-2xl' />
-                </div>
-                <div className='ml-4'>
-                  <span className='text-lg font-semibold text-white'>Logout</span>
-                  <p className='text-sm text-gray-300'>Sign out of your account</p>
-                </div>
-                <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                {/* Payment Methods */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={() => setActiveComponent('paymentMethods')}
+                >
+                  <div className='p-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg group-hover:from-red-600 group-hover:to-pink-600 transition duration-300'>
+                    <FaCreditCard className='text-white text-2xl' />
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Payment Methods</span>
+                    <p className='text-sm text-gray-300'>Manage your payment options</p>
+                  </div>
+                  <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                </motion.div>
+
+                {/* Language Settings */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={() => setActiveComponent('languageSettings')}
+                >
+                  <div className='p-3 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-lg group-hover:from-teal-600 group-hover:to-cyan-600 transition duration-300'>
+                    <FaLanguage className='text-white text-2xl' />
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Language Settings</span>
+                    <p className='text-sm text-gray-300'>Change your preferred language</p>
+                  </div>
+                  <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                </motion.div>
+
+                {/* Help & Support */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-gray-700/70 transition duration-300 group'
+                  onClick={() => setActiveComponent('helpSupport')}
+                >
+                  <div className='p-3 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-lg group-hover:from-yellow-600 group-hover:to-orange-600 transition duration-300'>
+                    <FaInfoCircle className='text-white text-2xl' />
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Help & Support</span>
+                    <p className='text-sm text-gray-300'>Get assistance and support</p>
+                  </div>
+                  <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                </motion.div>
+
+                {/* Logout */}
+                <motion.div
+                  className='flex items-center p-5 bg-gray-800/70 backdrop-blur-sm rounded-3xl shadow-lg cursor-pointer hover:bg-red-700/70 transition duration-300 group'
+                  onClick={handleLogout}
+                >
+                  <div className='p-3 bg-gradient-to-r from-red-500 to-pink-500 rounded-lg group-hover:from-red-600 group-hover:to-pink-600 transition duration-300'>
+                    <FaSignOutAlt className='text-white text-2xl' />
+                  </div>
+                  <div className='ml-4 flex-grow'>
+                    <span className='text-lg font-semibold text-white'>Logout</span>
+                    <p className='text-sm text-gray-300'>Sign out of your account</p>
+                  </div>
+                  <FaChevronRight className='ml-auto text-gray-400 text-xl' />
+                </motion.div>
               </motion.div>
             </motion.div>
           </>
@@ -377,7 +390,7 @@ const Profile = ({ onClose }) => {
   };
 
   return (
-    <div className='h-full w-full bg-gray-900/90 backdrop-blur-lg p-6 overflow-y-auto animate-slideIn'>
+    <div className='h-full w-full bg-gray-900/90 backdrop-blur-lg overflow-y-auto'>
       {renderActiveComponent()}
       <ToastContainer />
     </div>

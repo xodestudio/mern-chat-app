@@ -28,7 +28,6 @@ const EditProfile = ({ onClose }) => {
     description: authUser?.data?.user?.description || '',
     gender: authUser?.data?.user?.gender || ''
   });
-
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -76,8 +75,6 @@ const EditProfile = ({ onClose }) => {
 
       if (response.status === 200) {
         toast.success('Profile updated successfully!');
-
-        // Update authUser in Redux
         dispatch(
           setAuthUser({
             data: {
@@ -85,7 +82,6 @@ const EditProfile = ({ onClose }) => {
             }
           })
         );
-
         onClose();
       }
     } catch (error) {
@@ -98,16 +94,16 @@ const EditProfile = ({ onClose }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: -50 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -50 }}
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
       className='h-full w-full bg-gray-900/95 backdrop-blur-lg p-6 overflow-y-auto'
     >
       {/* Close Icon */}
       <button
         onClick={onClose}
-        className='absolute top-6 right-6 text-gray-300 hover:text-white transition-colors bg-gray-800/50 rounded-full p-3'
+        className='absolute top-6 right-6 text-gray-300 hover:text-white transition-colors bg-gray-800/50 rounded-full p-3 shadow-lg'
       >
         <FaTimes className='text-xl' />
       </button>
@@ -132,6 +128,11 @@ const EditProfile = ({ onClose }) => {
                     })`,
               backgroundSize: 'cover'
             }}
+            whileHover={{
+              borderColor: '#3B82F6',
+              boxShadow: '0 0 15px rgba(59, 130, 246, 0.7)'
+            }}
+            transition={{ duration: 0.3 }}
           >
             <label className='cursor-pointer p-3 bg-gray-900/70 rounded-full hover:bg-gray-800/80 transition duration-300'>
               <FaCamera className='text-xl text-gray-300' />
@@ -142,7 +143,15 @@ const EditProfile = ({ onClose }) => {
 
         {/* Profile Photo Upload */}
         <div className='flex justify-center -mt-16 mb-8'>
-          <motion.div className='relative'>
+          <motion.div
+            className='relative'
+            whileHover={{
+              borderColor: '#3B82F6',
+              boxShadow: '0 0 15px rgba(59, 130, 246, 0.7)',
+              borderRadius: '100rem'
+            }}
+            transition={{ duration: 0.3 }}
+          >
             <div className='w-32 h-32 rounded-full overflow-hidden border-4 border-white bg-gray-800'>
               <img
                 src={
@@ -162,9 +171,14 @@ const EditProfile = ({ onClose }) => {
         </div>
 
         {/* Input Fields */}
-        <div className='flex flex-wrap justify-between gap-x-6'>
+        <div className='flex flex-wrap justify-between gap-x-6 sm:gap-x-2'>
           {/* Full Name */}
-          <motion.div className='w-full sm:w-[48%] mb-6'>
+          <motion.div
+            className='w-full sm:w-[48%] mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
             <div className='flex items-center'>
               <FaUser className='mr-2 text-blue-400' />
               <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>
@@ -183,7 +197,12 @@ const EditProfile = ({ onClose }) => {
           </motion.div>
 
           {/* Username */}
-          <motion.div className='w-full sm:w-[48%] mb-6'>
+          <motion.div
+            className='w-full sm:w-[48%] mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
             <div className='flex items-center'>
               <FaUser className='mr-2 text-green-400' />
               <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>
@@ -202,7 +221,12 @@ const EditProfile = ({ onClose }) => {
           </motion.div>
 
           {/* Age */}
-          <motion.div className='w-full sm:w-[48%] mb-6'>
+          <motion.div
+            className='w-full sm:w-[48%] mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+          >
             <div className='flex items-center'>
               <FaEnvelope className='mr-2 text-yellow-400' />
               <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>Age</label>
@@ -218,12 +242,67 @@ const EditProfile = ({ onClose }) => {
             />
           </motion.div>
 
+          {/* Gender */}
+          <motion.div
+            className='w-full sm:w-[48%] mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.7 }}
+          >
+            <div className='flex items-center'>
+              <FaVenusMars className='mr-2 text-purple-400' />
+              <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>Gender</label>
+            </div>
+            <select
+              name='gender'
+              value={formData.gender}
+              onChange={handleChange}
+              className='w-full bg-gray-800/70 backdrop-blur-sm rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400'
+            >
+              <option value='' disabled className='text-white' hidden>
+                Select your gender
+              </option>
+              <option value='male'>Male</option>
+              <option value='female'>Female</option>
+              <option value='custom'>Custom</option>
+            </select>
+          </motion.div>
+
           {/* Password */}
-          <motion.div className='w-full sm:w-[48%] mb-6'>
+          <motion.div
+            className='w-full sm:w-[48%] mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
             <div className='flex items-center'>
               <FaLock className='mr-2 text-red-400' />
               <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>
-                Password
+                Old Password
+              </label>
+            </div>
+            <input
+              type='password'
+              name='password'
+              value={formData.password}
+              onChange={handleChange}
+              autoComplete='off'
+              className='w-full bg-gray-800/70 backdrop-blur-sm rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400'
+              placeholder='Enter a old password'
+            />
+          </motion.div>
+
+          {/* New Password */}
+          <motion.div
+            className='w-full sm:w-[48%] mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+          >
+            <div className='flex items-center'>
+              <FaLock className='mr-2 text-red-400' />
+              <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>
+                New Password
               </label>
             </div>
             <input
@@ -237,8 +316,13 @@ const EditProfile = ({ onClose }) => {
             />
           </motion.div>
 
-          {/* Description and Gender (Side by Side) */}
-          <motion.div className='w-full sm:w-[48%] mb-6'>
+          {/* Description */}
+          <motion.div
+            className='w-full mb-6'
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+          >
             <div className='flex items-center'>
               <FaAlignLeft className='mr-2 text-teal-400' />
               <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>
@@ -253,26 +337,6 @@ const EditProfile = ({ onClose }) => {
               className='w-full bg-gray-800/70 backdrop-blur-sm rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 resize-none'
               placeholder='Tell us about yourself...'
             ></textarea>
-          </motion.div>
-
-          <motion.div className='w-full sm:w-[48%] mb-6'>
-            <div className='flex items-center'>
-              <FaVenusMars className='mr-2 text-purple-400' />
-              <label className='block text-gray-300 text-sm mb-2 leading-[3rem] h-10'>Gender</label>
-            </div>
-            <select
-              name='gender'
-              value={formData.gender}
-              onChange={handleChange}
-              className='w-full bg-gray-800/70 backdrop-blur-sm rounded-lg p-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400'
-            >
-              <option value='' disabled>
-                Select your gender
-              </option>
-              <option value='male'>Male</option>
-              <option value='female'>Female</option>
-              <option value='custom'>Custom</option>
-            </select>
           </motion.div>
         </div>
 
