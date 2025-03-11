@@ -244,9 +244,16 @@ const getOtherUsers = asyncHandler(async (req, res) => {
       (msg) => msg.receiverId.toString() === currentLoggedInUser && !msg.isRead
     ).length;
 
+    // Get the latest message (including file if present)
     const latestMessage =
       conversation.messages.length > 0
-        ? conversation.messages[conversation.messages.length - 1].message
+        ? {
+            message:
+              conversation.messages[conversation.messages.length - 1].message,
+            file:
+              conversation.messages[conversation.messages.length - 1].file ||
+              null,
+          }
         : null;
 
     return {
@@ -256,7 +263,7 @@ const getOtherUsers = asyncHandler(async (req, res) => {
     };
   });
 
-  // Fetch additional user details (e.g., username, avatar)
+  // Fetch all other users (excluding the logged-in user)
   const otherUsers = await User.find({
     _id: { $ne: currentLoggedInUser },
   }).select("-password -refreshToken");
@@ -264,7 +271,7 @@ const getOtherUsers = asyncHandler(async (req, res) => {
   // Merge user details with unread message counts and latest messages
   const enrichedUsers = otherUsers.map((user) => {
     const userDetails = otherUsersDetails.find(
-      (details) => details.userId.toString() === user._id.toString()
+      (details) => details.userId?.toString() === user._id.toString()
     );
     return {
       ...user.toObject(),
