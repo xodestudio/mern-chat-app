@@ -127,7 +127,7 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   background: linear-gradient(90deg, #9eff7e, #15ff00); /* Gradient color */
-  -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: typing-text-animation 2s infinite ease-in-out;
 }

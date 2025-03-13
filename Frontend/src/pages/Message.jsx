@@ -5,6 +5,9 @@ const Message = ({ message, isLoggedInUser, senderAvatar }) => {
   const hasFile = !!message.file;
   const hasText = !!message.message;
 
+  // Extract file URL if message.file is an object (e.g., Cloudinary response)
+  const fileUrl = typeof message.file === 'string' ? message.file : message.file?.url || null;
+
   return (
     <motion.div
       className={`flex ${isLoggedInUser ? 'justify-end' : 'justify-start'} space-x-2 mb-4`}
@@ -38,29 +41,27 @@ const Message = ({ message, isLoggedInUser, senderAvatar }) => {
           } rounded-2xl backdrop-blur-sm shadow-lg overflow-hidden transition duration-300 ease-in-out`}
         >
           {/* Display File (if present) */}
-          {hasFile && (
+          {hasFile && fileUrl && (
             <div className='p-2'>
-              {message.file.endsWith('.jpg') ||
-              message.file.endsWith('.png') ||
-              message.file.endsWith('.jpeg') ? (
-                <img src={message.file} alt='Attachment' className='max-w-xs rounded-lg' />
-              ) : message.file.endsWith('.pdf') ? (
+              {fileUrl.endsWith('.jpg') || fileUrl.endsWith('.png') || fileUrl.endsWith('.jpeg') ? (
+                <img src={fileUrl} alt='Attachment' className='max-w-xs rounded-lg' />
+              ) : fileUrl.endsWith('.pdf') ? (
                 <a
-                  href={message.file}
+                  href={fileUrl}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='text-blue-500'
                 >
                   View PDF
                 </a>
-              ) : message.file.endsWith('.mp4') || message.file.endsWith('.avi') ? (
+              ) : fileUrl.endsWith('.mp4') || fileUrl.endsWith('.avi') ? (
                 <video controls className='max-w-xs rounded-lg'>
-                  <source src={message.file} type='video/mp4' />
+                  <source src={fileUrl} type='video/mp4' />
                   Your browser does not support the video tag.
                 </video>
               ) : (
                 <a
-                  href={message.file}
+                  href={fileUrl}
                   target='_blank'
                   rel='noopener noreferrer'
                   className='text-blue-500'

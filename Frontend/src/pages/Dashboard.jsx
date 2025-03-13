@@ -121,24 +121,14 @@ const Dashboard = () => {
   const submitHandler = async e => {
     e.preventDefault();
     if (!message.trim() && !selectedFile) return;
+
     try {
       const formData = new FormData();
       if (message) formData.append('message', message);
       if (selectedFile) formData.append('file', selectedFile);
 
-      axios.defaults.withCredentials = true;
-      const response = await axios.post(
-        `http://localhost:8000/api/v1/messages/send-message/${selectedUsers?._id}`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      );
-
-      // Update Redux state with the new message
-      dispatch(addMessage(response.data.data));
+      // Use the sendMessage function from useSendMessage hook
+      await sendMessage(formData);
 
       setMessage('');
       setSelectedFile(null);
