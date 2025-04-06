@@ -2,28 +2,25 @@ import mongoose from "mongoose";
 
 const messageSchema = new mongoose.Schema(
   {
-    senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    receiverId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-    message: {
+    text: {
       type: String,
+      default: "",
     },
-    file: {
-      type: String,
+    fileUrls: {
+      type: [String],
+      default: [],
     },
-    isRead: {
+    seen: {
       type: Boolean,
       default: false,
     },
+    msgByUserId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 export const Message = mongoose.model("Message", messageSchema);

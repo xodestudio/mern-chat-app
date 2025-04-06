@@ -1,15 +1,10 @@
 import multer from "multer";
 import { ApiError } from "../utils/ApiError.js";
-import { fileURLToPath } from "url";
 import path from "path";
 import fs from "fs";
 
-// Get __dirname in ES module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // Directory where files will be temporarily stored
-const TEMP_DIR = path.join(__dirname, "../public/temp");
+const TEMP_DIR = path.join(process.cwd(), "public", "temp");
 
 // Ensure the temp directory exists, otherwise create it
 if (!fs.existsSync(TEMP_DIR)) {
@@ -28,12 +23,19 @@ const storage = multer.diskStorage({
   },
 });
 
+// File filter to allow all types of files
+const fileFilter = (req, file, cb) => {
+  // Accept all file types
+  cb(null, true);
+};
+
 // Multer instance with storage, limits, and file filter
 const upload = multer({
   storage,
   limits: {
     fileSize: 50 * 1024 * 1024, // Limit file size to 50MB
   },
+  fileFilter,
 });
 
 // Custom error handling middleware for upload

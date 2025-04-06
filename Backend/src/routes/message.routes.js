@@ -5,14 +5,13 @@ import { sendMessage, getMessage } from "../controllers/message.controller.js";
 
 const router = Router();
 
-router
-  .route("/send-message/:id")
-  .post(
-    verifyJWT,
-    upload.fields([{ name: "file", maxCount: 1 }]),
-    handleUploadError,
-    sendMessage
-  );
-router.route("/get-message/:id").post(verifyJWT, getMessage);
+router.post(
+  "/send/:id",
+  verifyJWT,
+  upload.array("files"),
+  handleUploadError,
+  sendMessage
+);
+router.post("/get/:id", verifyJWT, getMessage);
 
 export default router;

@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react';
 import '@fontsource/poppins';
 import { RiMailFill, RiLock2Fill, RiUser3Fill } from 'react-icons/ri';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 import signupImg from '../assets/signup.jpg';
 import { motion } from 'framer-motion';
@@ -76,9 +76,13 @@ const Signup = () => {
     Object.keys(user).forEach(key => formData.append(key, user[key]));
     try {
       setLoading(true);
-      const response = await axios.post('http://localhost:8000/api/v1/users/register', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      const response = await axiosInstance.post(
+        'http://localhost:8000/api/v1/users/register',
+        formData,
+        {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        }
+      );
       showToast(response.data.message || 'Signup successful!', 'success');
       setUser({
         fullName: '',

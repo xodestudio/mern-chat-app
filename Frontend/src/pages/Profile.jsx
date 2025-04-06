@@ -19,7 +19,7 @@ import {
   FaYoutube,
   FaTiktok
 } from 'react-icons/fa';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance.js';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import Cookies from 'js-cookie';
@@ -72,7 +72,7 @@ const Profile = ({ onClose }) => {
         toast.error('User not logged in!');
         return;
       }
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         'http://localhost:8000/api/v1/users/logout',
         {},
         {

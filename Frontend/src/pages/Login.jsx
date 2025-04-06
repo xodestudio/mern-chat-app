@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate, Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance.js';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -51,7 +51,7 @@ const Login = () => {
       }
       try {
         setLoading(true);
-        const response = await axios.post(
+        const response = await axiosInstance.post(
           'http://localhost:8000/api/v1/users/login',
           { username, password },
           { withCredentials: true }

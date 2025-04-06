@@ -2,7 +2,7 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { User } from "../models/user.model.js";
-import { uploadImage } from "../utils/cloudinary.js";
+import { uploadFile } from "../utils/cloudinary.js";
 import { io, userSocketMap } from "../socket/socket.js";
 import jwt from "jsonwebtoken";
 import { Conversation } from "../models/conversation.model.js";
@@ -67,7 +67,7 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError(400, "Avatar is required.");
   }
 
-  const avatar = await uploadImage(avatarFilePath);
+  const avatar = await uploadFile(avatarFilePath);
 
   if (!avatar) {
     throw new ApiError(400, "Avatar upload failed.");
@@ -229,63 +229,71 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 const getOtherUsers = asyncHandler(async (req, res) => {
   const currentLoggedInUser = req.user._id;
 
-  // Fetch all conversations involving the logged-in user
+  // Optional search query
+  const searchQuery = req.query.search || "";
+  const searchRegex = new RegExp(searchQuery, "i");
+
+  // Fetch all registered users (excluding the logged-in user)
+  const query = {
+    _id: { $ne: currentLoggedInUser },
+    username: { $regex: searchRegex },
+  };
+
+  const allUsers = await User.find(query).select("-password -refreshToken");
+
+  // Fetch all conversations involving the current user
   const conversations = await Conversation.find({
-    participants: { $in: [currentLoggedInUser] },
+    $or: [{ sender: currentLoggedInUser }, { receiver: currentLoggedInUser }],
   }).populate("messages");
 
-  // Prepare the response with unread message counts and latest messages
-  const otherUsersDetails = conversations.map((conversation) => {
-    const otherUserId = conversation.participants.find(
-      (participant) => participant.toString() !== currentLoggedInUser
+  // Create a map of last messages and unseen messages count for each user
+  const lastMessageMap = new Map();
+  const unseenMessageCountMap = new Map();
+
+  conversations.forEach((conv) => {
+    const otherUserId =
+      conv.sender.toString() === currentLoggedInUser.toString()
+        ? conv.receiver.toString()
+        : conv.sender.toString();
+
+    // Calculate last message
+    if (conv.messages.length > 0) {
+      const lastMessage = conv.messages[conv.messages.length - 1];
+      lastMessageMap.set(otherUserId, lastMessage.text || "File shared");
+    } else {
+      lastMessageMap.set(otherUserId, "No messages yet");
+    }
+
+    // Calculate unseen messages count
+    const unseenMessages = conv.messages.filter(
+      (msg) =>
+        !msg.seen &&
+        msg.msgByUserId.toString() !== currentLoggedInUser.toString()
     );
+    unseenMessageCountMap.set(otherUserId, unseenMessages.length);
+  });
 
-    const unreadMessagesCount = conversation.messages.filter(
-      (msg) => msg.receiverId.toString() === currentLoggedInUser && !msg.isRead
-    ).length;
-
-    // Get the latest message (including file if present)
-    const latestMessage =
-      conversation.messages.length > 0
-        ? {
-            message:
-              conversation.messages[conversation.messages.length - 1].message,
-            file:
-              conversation.messages[conversation.messages.length - 1].file ||
-              null,
-          }
-        : null;
+  // Add last message and unseen messages count to each user
+  const formattedUsers = allUsers.map((user) => {
+    const unseenMessagesCount =
+      unseenMessageCountMap.get(user._id.toString()) || 0;
 
     return {
-      userId: otherUserId,
-      unreadMessagesCount,
-      latestMessage,
+      _id: user._id,
+      username: user.username,
+      avatar: user.avatar,
+      lastMessage: lastMessageMap.get(user._id.toString()) || "No messages yet",
+      unseenMessages: unseenMessagesCount,
     };
   });
 
-  // Fetch all other users (excluding the logged-in user)
-  const otherUsers = await User.find({
-    _id: { $ne: currentLoggedInUser },
-  }).select("-password -refreshToken");
-
-  // Merge user details with unread message counts and latest messages
-  const enrichedUsers = otherUsers.map((user) => {
-    const userDetails = otherUsersDetails.find(
-      (details) => details.userId?.toString() === user._id.toString()
-    );
-    return {
-      ...user.toObject(),
-      unreadMessagesCount: userDetails?.unreadMessagesCount || 0,
-      latestMessage: userDetails?.latestMessage || null,
-    };
-  });
-
+  // Return response
   return res
     .status(200)
     .json(
       new ApiResponse(
         200,
-        enrichedUsers,
+        formattedUsers,
         "All other users fetched successfully"
       )
     );
@@ -313,10 +321,10 @@ const editUser = asyncHandler(async (req, res) => {
 
   const files = req.files || {};
   if (files.avatar) {
-    updateData.avatar = await uploadImage(files.avatar[0].path);
+    updateData.avatar = await uploadFile(files.avatar[0].path);
   }
   if (files.coverPhoto) {
-    updateData.coverPhoto = await uploadImage(files.coverPhoto[0].path);
+    updateData.coverPhoto = await uploadFile(files.coverPhoto[0].path);
   }
 
   // Update user in one query

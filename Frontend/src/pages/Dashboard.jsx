@@ -2,13 +2,6 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { PiDotsThreeOutlineVerticalDuotone } from 'react-icons/pi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelectedUsers } from '../redux/features/userSlice';
-import {
-  addMessage,
-  setLatestMessage,
-  setMessages,
-  setUnreadCount
-} from '../redux/features/messageSlice';
-import axios from 'axios';
 import useGetOtherUsers from '../hooks/useGetOtherUsers';
 import useGetMessages from '../hooks/useGetMessages';
 import useSendMessage from '../hooks/useSendMessage';

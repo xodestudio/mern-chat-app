@@ -3,57 +3,82 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 import { ApiError } from "../utils/ApiError.js";
 import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";
-import { uploadImage } from "../utils/cloudinary.js";
+import { uploadFile } from "../utils/cloudinary.js";
 
 const sendMessage = asyncHandler(async (req, res) => {
   const senderId = req.user?._id;
   const receiverId = req.params?.id;
 
-  if (!senderId) {
+  // Validate sender and receiver
+  if (!senderId)
     throw new ApiError(401, "Unauthorized: User not authenticated");
-  }
 
-  if (!receiverId) {
+  if (!receiverId)
     throw new ApiError(400, "Bad Request: Receiver ID is required");
+
+  // Check if receiver exists in the database
+  const receiver = await User.findById(receiverId);
+  if (!receiver) {
+    throw new ApiError(404, "Receiver not found");
   }
 
-  const { message } = req.body;
+  const { text } = req.body;
 
-  const files = req.files || {};
+  // Check if at least one of text or file is provided
+  const hasText = text && text.trim() !== ""; // Check if text is valid
+  const hasFiles = req.files && req.files.length > 0; // Check if files exist
 
-  if ((!message || message.trim() === "") && !files.file) {
-    throw new ApiError(400, "Bad Request: Message or file is required");
+  if (!hasText && !hasFiles) {
+    throw new ApiError(400, "Bad Request: Text or file is required");
   }
 
-  let gotConversation = await Conversation.findOne({
-    participants: { $all: [senderId, receiverId] },
+  // Enforce an upper limit on the number of files (optional)
+  const MAX_FILES = 20; // Set your desired limit here
+  if (req.files && req.files.length > MAX_FILES) {
+    throw new ApiError(
+      400,
+      `Bad Request: You can upload a maximum of ${MAX_FILES} files`
+    );
+  }
+
+  // Find or create a conversation
+  let conversation = await Conversation.findOne({
+    $or: [
+      { sender: senderId, receiver: receiverId },
+      { sender: receiverId, receiver: senderId },
+    ],
   });
 
-  if (!gotConversation) {
-    gotConversation = await Conversation.create({
-      participants: [senderId, receiverId],
+  if (!conversation) {
+    conversation = await Conversation.create({
+      sender: senderId,
+      receiver: receiverId,
       messages: [],
     });
   }
 
-  // Upload file to Cloudinary if present
-  let fileUrl = null;
-  if (files.file) {
-    fileUrl = await uploadImage(files.file[0].path);
+  // Upload files to Cloudinary if present
+  const fileUrls = [];
+  if (hasFiles) {
+    for (const file of req.files) {
+      const fileUrl = await uploadFile(file.path); // Upload file to Cloudinary
+      fileUrls.push(fileUrl);
+    }
   }
 
+  // Create a new message
   const newMessage = await Message.create({
-    senderId,
-    receiverId,
-    message: message ? message.trim() : null,
-    file: fileUrl,
+    text: hasText ? text.trim() : "",
+    fileUrls: fileUrls, // Save array of file URLs
+    msgByUserId: senderId,
   });
 
-  if (newMessage) {
-    gotConversation.messages.push(newMessage._id);
-  }
+  // Add the message to the conversation
+  conversation.messages.push(newMessage._id);
+  await conversation.save();
 
-  await gotConversation.save();
+  // Increment the unseen messages count for the receiver
+  await User.findByIdAndUpdate(receiverId, { $inc: { unseenMessages: 1 } });
 
   return res
     .status(201)
@@ -74,8 +99,14 @@ const getMessage = asyncHandler(async (req, res) => {
 
   // Find the conversation between the two users
   const conversation = await Conversation.findOne({
-    participants: { $all: [senderId, receiverId] },
-  }).populate("messages");
+    $or: [
+      { sender: senderId, receiver: receiverId },
+      { sender: receiverId, receiver: senderId },
+    ],
+  }).populate({
+    path: "messages",
+    populate: { path: "msgByUserId", select: "username avatar" },
+  });
 
   // If no conversation exists, return an empty state
   if (!conversation) {
@@ -83,25 +114,31 @@ const getMessage = asyncHandler(async (req, res) => {
       new ApiResponse(
         200,
         {
-          messages: [], // Empty array for messages
-          unreadMessagesCount: 0, // No unread messages
-          latestMessage: null, // No latest message
+          messages: [],
         },
         "No conversation found. Start chatting!"
       )
     );
   }
 
-  // Calculate unread messages
-  const unreadMessagesCount = conversation.messages.filter(
-    (msg) => msg.receiverId.toString() === senderId && !msg.isRead
-  ).length;
+  // Mark all unseen messages as seen for the current user
+  const unseenMessages = conversation.messages.filter(
+    (msg) => !msg.seen && msg.msgByUserId.toString() !== senderId.toString()
+  );
 
-  // Get the latest message
-  const latestMessage =
-    conversation.messages.length > 0
-      ? conversation.messages[conversation.messages.length - 1]
-      : null;
+  if (unseenMessages.length > 0) {
+    // Update the `seen` status of unseen messages
+    await Message.updateMany(
+      { _id: { $in: unseenMessages.map((msg) => msg._id) } },
+      { $set: { seen: true } }
+    );
+
+    // Reset the unseen messages count for the current user
+    await User.findByIdAndUpdate(senderId, { $set: { unseenMessages: 0 } });
+
+    // Save the updated conversation
+    await conversation.save();
+  }
 
   // Return the conversation data
   return res.status(200).json(
@@ -110,27 +147,14 @@ const getMessage = asyncHandler(async (req, res) => {
       {
         messages: conversation.messages.map((msg) => ({
           _id: msg._id,
-          senderId: msg.senderId,
-          receiverId: msg.receiverId,
-          message: msg.message,
-          file: msg.file, // Include file URL
-          isRead: msg.isRead,
+          text: msg.text,
+          fileUrls: msg.fileUrls,
+          seen: msg.seen,
+          msgByUserId: msg.msgByUserId,
           createdAt: msg.createdAt,
         })),
-        unreadMessagesCount,
-        latestMessage: latestMessage
-          ? {
-              _id: latestMessage._id,
-              senderId: latestMessage.senderId,
-              receiverId: latestMessage.receiverId,
-              message: latestMessage.message,
-              file: latestMessage.file,
-              isRead: latestMessage.isRead,
-              createdAt: latestMessage.createdAt,
-            }
-          : null,
       },
-      "Message fetched successfully"
+      "Messages fetched successfully"
     )
   );
 });

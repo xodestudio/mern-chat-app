@@ -1,9 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  messages: [],
-  unreadCounts: {},
-  latestMessages: {}
+  messages: []
 };
 
 export const messageSlice = createSlice({
@@ -15,18 +13,10 @@ export const messageSlice = createSlice({
     },
     addMessage: (state, action) => {
       state.messages.push(action.payload);
-    },
-    setUnreadCount: (state, action) => {
-      const { userId, count } = action.payload;
-      state.unreadCounts[userId] = count;
-    },
-    setLatestMessage: (state, action) => {
-      const { userId, message } = action.payload;
-      state.latestMessages[userId] = message;
     }
   }
 });
 
-export const { addMessage, setMessages, setUnreadCount, setLatestMessage } = messageSlice.actions;
+export const { addMessage, setMessages } = messageSlice.actions;
 
 export default messageSlice.reducer;

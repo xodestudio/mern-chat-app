@@ -9,7 +9,7 @@ import {
   FaAlignLeft,
   FaVenusMars
 } from 'react-icons/fa';
-import axios from 'axios';
+import axiosInstance from '../axiosInstance.js';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
@@ -62,7 +62,7 @@ const EditProfile = ({ onClose }) => {
         if (formData[key]) formDataToSend.append(key, formData[key]);
       });
 
-      const response = await axios.put(
+      const response = await axiosInstance.put(
         'http://localhost:8000/api/v1/users/edit-profile',
         formDataToSend,
         {

@@ -18,7 +18,7 @@ const Message = ({ message, isLoggedInUser, senderAvatar }) => {
       {/* Sender's Profile Photo (Only for other users) */}
       {!isLoggedInUser && (
         <motion.div
-          className={`flex-shrink-0 ${hasFile ? 'self-end' : 'self-start'}`}
+          className={`flex-shrink-0 self-start`}
           whileHover={{ scale: 1.1 }}
           transition={{ duration: 0.3 }}
         >

@@ -12,6 +12,7 @@ import {
 import storage from 'redux-persist/lib/storage';
 import userReducer from './features/userSlice.js';
 import messageReducer from './features/messageSlice.js';
+import { checkTokenExpiryMiddleware } from '../checkTokenExpiry.js';
 
 // Custom Transform to Reset selectedUsers on Rehydrate
 const resetSelectedUsersTransform = createTransform(
@@ -20,7 +21,7 @@ const resetSelectedUsersTransform = createTransform(
     ...outboundState,
     selectedUsers: null // Reset selectedUsers on rehydration
   }),
-  { whitelist: ['user'] } // Only apply this transform to 'user' slice
+  { whitelist: ['user'] }
 );
 
 const persistConfig = {
@@ -43,8 +44,9 @@ const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
-      }
-    })
+      },
+      immutableCheck: false
+    }).concat(checkTokenExpiryMiddleware)
 });
 
 export default store;

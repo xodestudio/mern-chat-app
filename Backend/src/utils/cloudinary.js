@@ -9,20 +9,28 @@ cloudinary.config({
 });
 
 // Function to upload image to Cloudinary
-const uploadImage = async (filePath) => {
-  if (!filePath) return null;
+const uploadFile = async (filePath) => {
+  if (!filePath || typeof filePath !== "string") {
+    console.error("Invalid file path provided");
+    return null;
+  }
 
   try {
     const response = await cloudinary.uploader.upload(filePath, {
       resource_type: "auto",
     });
 
-    fs.unlinkSync(filePath); // Remove the local file after upload
+    // Remove the local file after successful upload
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    // Return the secure URL of the uploaded file
     return response.secure_url;
   } catch (error) {
-    console.error("Upload failed:", error.message);
-    return null;
+    console.error("Failed to upload file to Cloudinary:", error.message);
+    throw new Error("File upload failed");
   }
 };
 
-export { uploadImage };
+export { uploadFile };
