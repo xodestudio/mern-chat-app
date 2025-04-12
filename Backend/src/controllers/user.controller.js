@@ -119,7 +119,7 @@ const loginUser = asyncHandler(async (req, res) => {
   );
 
   const loggedInUser = await User.findById(user._id).select(
-    "-password -refreshToken"
+    "-password -refreshToken -unseenMessages"
   );
 
   const options = {
@@ -228,66 +228,67 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 const getOtherUsers = asyncHandler(async (req, res) => {
   const currentLoggedInUser = req.user._id;
-
-  // Optional search query
   const searchQuery = req.query.search || "";
   const searchRegex = new RegExp(searchQuery, "i");
 
-  // Fetch all registered users (excluding the logged-in user)
-  const query = {
+  // Fetch all users except the current logged-in user
+  const allUsers = await User.find({
     _id: { $ne: currentLoggedInUser },
     username: { $regex: searchRegex },
-  };
+  }).select("-password -refreshToken");
 
-  const allUsers = await User.find(query).select("-password -refreshToken");
+  // Create a map for user data
+  const userDataMap = new Map();
 
-  // Fetch all conversations involving the current user
+  // Initialize with basic user data
+  allUsers.forEach((user) => {
+    userDataMap.set(user._id.toString(), {
+      _id: user._id,
+      username: user.username,
+      avatar: user.avatar,
+      unseenMessages: 0, // Default value
+      lastMessage: "No messages yet",
+    });
+  });
+
+  // Fetch all conversations where the current logged-in user is either the sender or receiver
   const conversations = await Conversation.find({
     $or: [{ sender: currentLoggedInUser }, { receiver: currentLoggedInUser }],
   }).populate("messages");
 
-  // Create a map of last messages and unseen messages count for each user
-  const lastMessageMap = new Map();
-  const unseenMessageCountMap = new Map();
-
+  // Update with conversation data
   conversations.forEach((conv) => {
     const otherUserId =
       conv.sender.toString() === currentLoggedInUser.toString()
         ? conv.receiver.toString()
         : conv.sender.toString();
 
-    // Calculate last message
-    if (conv.messages.length > 0) {
-      const lastMessage = conv.messages[conv.messages.length - 1];
-      lastMessageMap.set(otherUserId, lastMessage.text || "File shared");
-    } else {
-      lastMessageMap.set(otherUserId, "No messages yet");
+    if (userDataMap.has(otherUserId)) {
+      const userData = userDataMap.get(otherUserId);
+
+      // Count unseen messages where the current user is the sender
+      const unseenMessagesCount = conv.messages.filter(
+        (msg) =>
+          msg.msgByUserId.toString() !== currentLoggedInUser.toString() && // Messages sent by the other user
+          !msg.seen // Messages are unseen
+      ).length;
+
+      // Update unseenMessages count
+      userData.unseenMessages += unseenMessagesCount;
+
+      // Update last message if it exists
+      if (conv.messages.length > 0) {
+        const lastMessage = conv.messages[conv.messages.length - 1];
+        userData.lastMessage = lastMessage.text || "File shared";
+      }
+
+      userDataMap.set(otherUserId, userData);
     }
-
-    // Calculate unseen messages count
-    const unseenMessages = conv.messages.filter(
-      (msg) =>
-        !msg.seen &&
-        msg.msgByUserId.toString() !== currentLoggedInUser.toString()
-    );
-    unseenMessageCountMap.set(otherUserId, unseenMessages.length);
   });
 
-  // Add last message and unseen messages count to each user
-  const formattedUsers = allUsers.map((user) => {
-    const unseenMessagesCount =
-      unseenMessageCountMap.get(user._id.toString()) || 0;
+  // Convert map to array
+  const formattedUsers = Array.from(userDataMap.values());
 
-    return {
-      _id: user._id,
-      username: user.username,
-      avatar: user.avatar,
-      lastMessage: lastMessageMap.get(user._id.toString()) || "No messages yet",
-      unseenMessages: unseenMessagesCount,
-    };
-  });
-
-  // Return response
   return res
     .status(200)
     .json(
