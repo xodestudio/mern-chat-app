@@ -100,10 +100,7 @@ const getMessage = asyncHandler(async (req, res) => {
       { sender: currentUserId, receiver: otherUserId },
       { sender: otherUserId, receiver: currentUserId },
     ],
-  }).populate({
-    path: "messages",
-    populate: { path: "msgByUserId", select: "username avatar" },
-  });
+  }).populate("messages");
 
   // Return empty if no conversation exists
   if (!conversation) {

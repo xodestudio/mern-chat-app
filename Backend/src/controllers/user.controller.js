@@ -227,46 +227,50 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 });
 
 const getOtherUsers = asyncHandler(async (req, res) => {
-  const currentLoggedInUser = req.user._id;
-  const searchQuery = req.query.search || "";
-  const searchRegex = new RegExp(searchQuery, "i");
+  const currentLoggedInUser = req.user._id; // The ID of the logged-in user
+  const searchQuery = req.query.search || ""; // Optional search query
+  const searchRegex = new RegExp(searchQuery, "i"); // Case-insensitive regex for search
 
   // Fetch all users except the current logged-in user
   const allUsers = await User.find({
-    _id: { $ne: currentLoggedInUser },
-    username: { $regex: searchRegex },
-  }).select("-password -refreshToken");
+    _id: { $ne: currentLoggedInUser }, // Exclude the logged-in user
+    username: { $regex: searchRegex }, // Filter users based on search query
+  }).select("-password -refreshToken"); // Exclude sensitive fields
 
-  // Create a map for user data
+  // Create a map to store user data
   const userDataMap = new Map();
 
-  // Initialize with basic user data
+  // Initialize user data with default values
   allUsers.forEach((user) => {
     userDataMap.set(user._id.toString(), {
       _id: user._id,
       username: user.username,
       avatar: user.avatar,
       unseenMessages: 0, // Default value
-      lastMessage: "No messages yet",
+      lastMessage: "No messages yet", // Default message
+      lastMessageTime: null, // To track the latest message timestamp
     });
   });
 
-  // Fetch all conversations where the current logged-in user is either the sender or receiver
+  // Fetch all conversations involving the logged-in user
   const conversations = await Conversation.find({
-    $or: [{ sender: currentLoggedInUser }, { receiver: currentLoggedInUser }],
+    $or: [
+      { sender: currentLoggedInUser }, // Logged-in user as sender
+      { receiver: currentLoggedInUser }, // Logged-in user as receiver
+    ],
   }).populate("messages");
 
-  // Update with conversation data
+  // Update user data with conversation details
   conversations.forEach((conv) => {
     const otherUserId =
       conv.sender.toString() === currentLoggedInUser.toString()
-        ? conv.receiver.toString()
-        : conv.sender.toString();
+        ? conv.receiver.toString() // If logged-in user is the sender, other user is the receiver
+        : conv.sender.toString(); // If logged-in user is the receiver, other user is the sender
 
     if (userDataMap.has(otherUserId)) {
       const userData = userDataMap.get(otherUserId);
 
-      // Count unseen messages where the current user is the sender
+      // Count unseen messages where the logged-in user is the receiver
       const unseenMessagesCount = conv.messages.filter(
         (msg) =>
           msg.msgByUserId.toString() !== currentLoggedInUser.toString() && // Messages sent by the other user
@@ -276,19 +280,29 @@ const getOtherUsers = asyncHandler(async (req, res) => {
       // Update unseenMessages count
       userData.unseenMessages += unseenMessagesCount;
 
-      // Update last message if it exists
+      // Update last message and timestamp
       if (conv.messages.length > 0) {
-        const lastMessage = conv.messages[conv.messages.length - 1];
-        userData.lastMessage = lastMessage.text || "File shared";
+        const lastMessage = conv.messages[conv.messages.length - 1]; // Get the latest message
+        userData.lastMessage = lastMessage.text || "File shared"; // Use text or fallback to "File shared"
+        userData.lastMessageTime = lastMessage.createdAt; // Latest message timestamp
       }
 
+      // Update the user data in the map
       userDataMap.set(otherUserId, userData);
     }
   });
 
-  // Convert map to array
-  const formattedUsers = Array.from(userDataMap.values());
+  // Convert the map to an array
+  let formattedUsers = Array.from(userDataMap.values());
 
+  // Sort users by the latest message timestamp (newest first)
+  formattedUsers.sort((a, b) => {
+    if (!b.lastMessageTime) return -1; // Push users with no messages to the bottom
+    if (!a.lastMessageTime) return 1;
+    return new Date(b.lastMessageTime) - new Date(a.lastMessageTime); // Sort by timestamp
+  });
+
+  // Return the response
   return res
     .status(200)
     .json(
