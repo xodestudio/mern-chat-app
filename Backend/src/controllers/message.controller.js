@@ -55,9 +55,11 @@ const sendMessage = asyncHandler(async (req, res) => {
   // Upload files if present
   const fileUrls = [];
   if (hasFiles) {
-    for (const file of req.files) {
-      const fileUrl = await uploadFile(file.path);
-      fileUrls.push(fileUrl);
+    try {
+      const uploadPromises = req.files.map((file) => uploadFile(file.path));
+      fileUrls = await Promise.all(uploadPromises);
+    } catch (error) {
+      throw new ApiError(500, "Internal Server Error: File upload failed");
     }
   }
 
