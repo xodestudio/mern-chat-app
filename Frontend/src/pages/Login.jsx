@@ -5,10 +5,10 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
 import { FaUserCircle } from 'react-icons/fa';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setAuthUser } from '../redux/features/userSlice';
-import axiosInstance from '../axiosInstance.js';
+import axios from 'axios';
 import { motion } from 'framer-motion';
 
 const Login = () => {
@@ -19,7 +19,6 @@ const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // Check for refresh token and "Remember Me" on mount
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
@@ -29,39 +28,54 @@ const Login = () => {
     }
   }, []);
 
-  // Toggle password visibility
-  const togglePassword = useCallback(() => {
-    setShowPassword(prev => !prev);
-  }, []);
-
-  // Handle input changes
+  const togglePassword = useCallback(() => setShowPassword(prev => !prev), []);
   const handleChange = useCallback(e => {
     const { name, value } = e.target;
     setUser(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  // Handle form submission
+  const handleRememberMeChange = useCallback(e => {
+    setRememberMe(e.target.checked);
+  }, []);
+
+  const showToast = useCallback((message, type) => {
+    toast[type](message, {
+      position: 'top-center',
+      autoClose: 4000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: 'dark'
+    });
+  }, []);
+
   const handleSubmit = useCallback(
     async e => {
       e.preventDefault();
       const { username, password } = user;
+
       if (!username || !password) {
         showToast('Please fill in all fields!', 'error');
         return;
       }
+
       try {
         setLoading(true);
-        const response = await axiosInstance.post(
+        const response = await axios.post(
           'http://localhost:8000/api/v1/users/login',
           { username, password },
           { withCredentials: true }
         );
+
         showToast(response.data.message || 'Login successful!', 'success');
+
         if (rememberMe) {
           localStorage.setItem('user', JSON.stringify(user));
         } else {
           localStorage.removeItem('user');
         }
+
         dispatch(setAuthUser(response.data));
         navigate('/');
       } catch (error) {
@@ -71,34 +85,8 @@ const Login = () => {
         setLoading(false);
       }
     },
-    [user, rememberMe, dispatch, navigate]
+    [user, rememberMe, dispatch, navigate, showToast]
   );
-
-  // Handle "Remember Me" checkbox
-  const handleRememberMeChange = useCallback(e => {
-    setRememberMe(e.target.checked);
-  }, []);
-
-  // Show custom toast notifications
-  const showToast = useCallback((message, type) => {
-    const customToastStyle = {
-      backgroundColor: type === 'success' ? '#4CAF50' : '#FF5733',
-      color: 'white',
-      borderRadius: '10px',
-      padding: '10px 20px',
-      fontWeight: 'bold'
-    };
-    toast(<div style={customToastStyle}>{message}</div>, {
-      type: type === 'success' ? 'success' : 'error',
-      position: 'top-center',
-      autoClose: 5000,
-      hideProgressBar: true,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      theme: 'dark'
-    });
-  }, []);
 
   return (
     <motion.div
@@ -106,40 +94,47 @@ const Login = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.8 }}
-      className='font-poppins h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 to-blue-900 relative overflow-hidden'
+      className='font-poppins h-screen flex items-center justify-center bg-gradient-to-br from-gray-950 to-slate-900 relative overflow-hidden'
     >
-      {/* Background Animation */}
+      {/* Background Image Animation */}
       <motion.div
-        className='absolute inset-0 bg-[url(https://static.vecteezy.com/system/resources/previews/009/760/750/non_2x/background-with-pieces-of-bubble-liquid-shape-and-gradient-color-free-vector.jpg)] bg-cover bg-center'
+        className='absolute inset-0 bg-[url(https://static.vecteezy.com/system/resources/previews/040/890/255/non_2x/ai-generated-empty-wooden-table-on-the-natural-background-for-product-display-free-photo.jpg)] bg-cover bg-center opacity-50'
         initial={{ scale: 1.1 }}
         animate={{ scale: 1 }}
         transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-      ></motion.div>
+      />
+
+      {/* Floating Circles */}
       <motion.div
         className='absolute inset-0 flex items-center justify-center'
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.5 }}
       >
-        <motion.div
-          className='w-48 h-48 sm:w-72 sm:h-72 md:w-96 md:h-96 bg-blue-500/10 rounded-full blur-3xl'
-          animate={{
-            scale: [1, 1.1, 1],
-            rotate: [0, 360, 0]
-          }}
-          transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
-        ></motion.div>
+        {[1, 2, 3].map(index => (
+          <motion.div
+            key={index}
+            className={`absolute rounded-full blur-3xl ${
+              index === 1 ? 'bg-blue-500/10' : index === 2 ? 'bg-purple-500/10' : 'bg-green-500/10'
+            }`}
+            style={{ width: `${index * 6}rem`, height: `${index * 6}rem` }}
+            animate={{ scale: [1, 1.1, 1], rotate: [0, 360, 0] }}
+            transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
+          />
+        ))}
       </motion.div>
+
+      <ToastContainer />
 
       {/* Login Box */}
       <motion.div
-        className='bg-white/10 border-2 border-white/20 rounded-3xl backdrop-blur-md shadow-2xl mx-4 w-full max-w-4xl overflow-hidden flex flex-col md:flex-row relative'
-        whileHover={{ boxShadow: '0 10px 30px rgba(0, 123, 255, 0.3)' }}
+        className='bg-white/5 border border-white/10 rounded-2xl backdrop-blur-md shadow-lg w-full max-w-3xl overflow-hidden flex flex-col md:flex-row relative z-10'
+        whileHover={{ boxShadow: '0 10px 20px rgba(255, 255, 255, 0.1)' }}
         transition={{ duration: 0.3 }}
       >
-        {/* Left Side: Illustration (Hidden on Mobile) */}
+        {/* Left Side Image */}
         <motion.div
-          className='hidden md:block w-full lg:w-1/2 p-8 lg:p-12 items-center justify-center'
+          className='hidden md:block w-full lg:w-1/2 p-8 lg:p-12 lg:pr-0 items-center justify-center'
           initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2 }}
@@ -147,70 +142,68 @@ const Login = () => {
           <img
             src='https://cdni.iconscout.com/illustration/premium/thumb/login-illustration-download-in-svg-png-gif-file-formats--account-password-security-lock-design-development-illustrations-2757111.png?f=webp'
             alt='Illustration'
-            className='w-full h-[100%] sm:w-64 md:w-72 lg:w-80 object-contain'
+            className='w-full sm:w-64 md:w-72 lg:w-80 object-contain'
           />
         </motion.div>
 
-        {/* Right Side: Login Form */}
+        {/* Right Side Form */}
         <motion.div
-          className='w-full lg:w-1/2 p-8 lg:p-12 text-white'
+          className='w-full lg:w-1/2 p-8 lg:p-12 lg:pl-0 text-white flex flex-col justify-evenly'
           initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.4 }}
         >
-          <h1 className='text-center text-xl sm:text-2xl lg:text-4xl font-bold mb-4 lg:mb-8'>
+          <h1 className='text-center text-[1.8rem]/[1.75rem] font-bold mb-4 lg:mb-8'>
             Welcome Back!
           </h1>
 
-          {/* Username Input */}
+          {/* Username */}
           <motion.div
-            className='flex items-center border-2 border-white/20 px-4 lg:px-6 py-3 lg:py-4 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-4 lg:mb-6'
-            whileHover={{ borderColor: '#4CAF50', boxShadow: '0 0 10px rgba(76, 175, 80, 0.5)' }}
-            transition={{ duration: 0.3 }}
+            className='flex items-center border-2 border-white/20 px-4 py-2 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-3'
+            whileHover={{ borderColor: '#4CAF50' }}
           >
-            <FaUserCircle className='text-lg sm:text-xl lg:text-2xl text-white' />
+            <FaUserCircle className='text-lg text-white' />
             <input
               type='text'
               name='username'
               placeholder='Username'
               required
               autoComplete='off'
-              className='bg-transparent flex-1 outline-none placeholder-white text-white pl-4 text-sm sm:text-base'
+              className='bg-transparent flex-1 outline-none placeholder-white text-white pl-3 text-sm/[1.8rem]'
               value={user.username}
               onChange={handleChange}
               aria-label='Username'
             />
           </motion.div>
 
-          {/* Password Input */}
+          {/* Password */}
           <motion.div
-            className='flex items-center border-2 border-white/20 px-4 lg:px-6 py-3 lg:py-4 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-3 lg:mb-6'
-            whileHover={{ borderColor: '#FF5733', boxShadow: '0 0 10px rgba(255, 87, 51, 0.5)' }}
-            transition={{ duration: 0.3 }}
+            className='flex items-center border-2 border-white/20 px-4 py-2 rounded-full hover:border-blue-500 focus-within:border-blue-500 transition duration-300 mb-3'
+            whileHover={{ borderColor: '#FF5733' }}
           >
-            <RiLock2Fill className='text-lg sm:text-xl lg:text-2xl text-white' />
+            <RiLock2Fill className='text-lg text-white' />
             <input
               type={showPassword ? 'text' : 'password'}
               name='password'
               placeholder='Password'
               required
               autoComplete='off'
-              className='bg-transparent flex-1 outline-none placeholder-white text-white pl-4 text-sm sm:text-base'
+              className='bg-transparent flex-1 outline-none placeholder-white text-white pl-3 text-sm/[1.8rem]'
               value={user.password}
               onChange={handleChange}
               aria-label='Password'
             />
             <div onClick={togglePassword} className='cursor-pointer'>
               {showPassword ? (
-                <AiOutlineEyeInvisible className='text-lg sm:text-xl lg:text-2xl text-white' />
+                <AiOutlineEyeInvisible className='text-lg text-white' />
               ) : (
-                <AiOutlineEye className='text-lg sm:text-xl lg:text-2xl text-white' />
+                <AiOutlineEye className='text-lg text-white' />
               )}
             </div>
           </motion.div>
 
-          {/* Remember Me and Forgot Password */}
-          <div className='flex justify-evenly items-center mt-4 lg:mt-6 text-xs sm:text-sm lg:text-base'>
+          {/* Remember Me */}
+          <div className='flex justify-between items-center text-[0.8rem]/[1rem]'>
             <div className='flex items-center space-x-2'>
               <input
                 type='checkbox'
@@ -218,51 +211,62 @@ const Login = () => {
                 id='user-check'
                 checked={rememberMe}
                 onChange={handleRememberMeChange}
-                aria-label='Remember me'
               />
               <label htmlFor='user-check' className='text-white'>
                 Remember me
               </label>
             </div>
-            <a href='#' className='hover:underline text-white' aria-label='Forgot Password'>
+            <a href='#' className='hover:underline text-white'>
               Forgot Password?
             </a>
           </div>
 
-          {/* Login Button */}
+          {/* Submit Button */}
           <motion.button
             type='submit'
-            className='w-full py-3 lg:py-4 bg-blue-600 text-white rounded-full font-medium mt-6 lg:mt-8 hover:bg-blue-500 transition duration-300 text-xs sm:text-sm lg:text-base'
+            className='w-full py-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full font-medium mt-4 hover:from-blue-700 hover:to-indigo-700 transition duration-300 text-sm/[1.75rem] shadow-lg'
             disabled={loading}
             onClick={handleSubmit}
-            aria-label='Login'
-            whileHover={{
-              boxShadow: '0 0 20px rgba(76, 175, 80, 0.7)',
-              background: 'linear-gradient(135deg, #4CAF50, #388E3C)'
-            }}
-            transition={{ duration: 0.3 }}
+            whileHover={{ scale: 1.02 }}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? (
+              <div className='flex items-center justify-center'>
+                <svg className='animate-spin h-5 w-5 mr-2 text-white' viewBox='0 0 24 24'>
+                  <circle
+                    className='opacity-25'
+                    cx='12'
+                    cy='12'
+                    r='10'
+                    stroke='currentColor'
+                    strokeWidth='4'
+                  ></circle>
+                  <path
+                    className='opacity-75'
+                    fill='currentColor'
+                    d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
+                  />
+                </svg>
+                Logging in...
+              </div>
+            ) : (
+              'Login'
+            )}
           </motion.button>
 
           {/* Register Link */}
-          <div className='flex justify-center gap-1 text-center text-xs sm:text-sm lg:text-base mt-4 lg:mt-6 text-white'>
-            Don't have an account?
+          <div className='flex justify-center gap-1 text-center text-xs mt-3 text-white'>
+            Don&apos;t have an account?
             <Link
               to='/signup'
               className='font-medium hover:underline'
               aria-label='Register'
-              whileHover={{ color: '#4CAF50' }}
-              transition={{ duration: 0.3 }}
+              whileHover={{ scale: 1.05 }}
             >
               Register
             </Link>
           </div>
         </motion.div>
       </motion.div>
-
-      {/* Toast Container */}
-      <ToastContainer />
     </motion.div>
   );
 };

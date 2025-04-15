@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import axiosInstance from '../axiosInstance.js';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage, setMessages } from '../redux/features/messageSlice';
 import useSocket from './useSocket.js';
@@ -15,8 +15,8 @@ const useGetMessages = () => {
       try {
         if (!selectedUsers?._id) return;
 
-        axiosInstance.defaults.withCredentials = true;
-        const response = await axiosInstance.post(
+        axios.defaults.withCredentials = true;
+        const response = await axios.post(
           `http://localhost:8000/api/v1/messages/get-message/${selectedUsers._id}`
         );
 

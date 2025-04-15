@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import axiosInstance from '../axiosInstance.js';
+import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addMessage } from '../redux/features/messageSlice';
 import useSocket from './useSocket';
@@ -36,7 +36,7 @@ const useSendMessage = () => {
         }
 
         // Send message to the server
-        const response = await axiosInstance.post(
+        const response = await axios.post(
           `http://localhost:8000/api/v1/messages/send-message/${selectedUsers._id}`,
           formData,
           {
