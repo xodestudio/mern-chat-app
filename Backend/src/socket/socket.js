@@ -32,9 +32,9 @@ io.on("connection", (socket) => {
     broadcastOnlineUsers();
   }
 
-  // Real-time text message sending
+  // Real-time text/file message sending
   socket.on("sendMessage", async (data) => {
-    const { receiverId, text } = data;
+    const { receiverId, text, fileUrl } = data;
 
     try {
       // Find or create conversation
@@ -56,6 +56,7 @@ io.on("connection", (socket) => {
       // Create new message
       const newMessage = await Message.create({
         text,
+        fileUrls: fileUrl ? [fileUrl] : [],
         msgByUserId: userId,
         seen: false,
       });
@@ -64,97 +65,29 @@ io.on("connection", (socket) => {
       conversation.messages.push(newMessage._id);
       await conversation.save();
 
-      // Increment unseenMessages count for the receiver
-      await User.findByIdAndUpdate(receiverId, {
-        $inc: { unseenMessages: 1 },
-        $set: { lastMessage: text },
-      });
-
       // Check if receiver is online
       const receiverSocketId = userSocketMap[receiverId];
       if (receiverSocketId) {
+        // Emit the message to the receiver
         io.to(receiverSocketId).emit("receiveMessage", {
           senderId: userId,
           text,
+          fileUrl,
           createdAt: newMessage.createdAt,
+        });
+
+        // Mark the message as seen by the receiver
+        socket.on("messageSeen", async () => {
+          await Message.findByIdAndUpdate(newMessage._id, { seen: true });
+          io.to(userSocketMap[userId]).emit("messageSeenAck", {
+            messageId: newMessage._id,
+          });
         });
       } else {
         console.log(`Message saved for offline user ${receiverId}`);
       }
     } catch (error) {
       console.error("Error sending message:", error);
-    }
-  });
-
-  // Real-time file sharing
-  socket.on("sendFile", async (data) => {
-    const { receiverId, fileUrl } = data;
-
-    try {
-      // Find or create conversation
-      let conversation = await Conversation.findOne({
-        $or: [
-          { sender: userId, receiver: receiverId },
-          { sender: receiverId, receiver: userId },
-        ],
-      });
-
-      if (!conversation) {
-        conversation = await Conversation.create({
-          sender: userId,
-          receiver: receiverId,
-          messages: [],
-        });
-      }
-
-      // Create new message with file URL
-      const newMessage = await Message.create({
-        fileUrls: [fileUrl],
-        msgByUserId: userId,
-        seen: false,
-      });
-
-      // Add message to conversation
-      conversation.messages.push(newMessage._id);
-      await conversation.save();
-
-      // Increment unseenMessages count for the receiver
-      await User.findByIdAndUpdate(receiverId, {
-        $inc: { unseenMessages: 1 },
-        $set: { lastMessage: "File shared" },
-      });
-
-      // Check if receiver is online
-      const receiverSocketId = userSocketMap[receiverId];
-      if (receiverSocketId) {
-        io.to(receiverSocketId).emit("receiveFile", {
-          senderId: userId,
-          fileUrl,
-          createdAt: newMessage.createdAt,
-        });
-      } else {
-        console.log(`File URL saved for offline user ${receiverId}`);
-      }
-    } catch (error) {
-      console.error("Error sending file:", error);
-    }
-  });
-
-  // Typing indicator
-  socket.on("typing", (data) => {
-    const { receiverId } = data;
-    const receiverSocketId = userSocketMap[receiverId];
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("userTyping", { senderId: userId });
-    }
-  });
-
-  // Stop typing indicator
-  socket.on("stopTyping", (data) => {
-    const { receiverId } = data;
-    const receiverSocketId = userSocketMap[receiverId];
-    if (receiverSocketId) {
-      io.to(receiverSocketId).emit("userStoppedTyping", { senderId: userId });
     }
   });
 

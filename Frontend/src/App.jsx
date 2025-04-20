@@ -1,14 +1,19 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import Dashboard from './pages/Dashboard.jsx';
 import Login from './pages/Login.jsx';
 import Signup from './pages/Signup.jsx';
 import Profile from './pages/Profile.jsx';
+import ChatWindow from './pages/ChatWindow.jsx';
 
 // Router Configuration
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Dashboard />
+  },
+  {
+    path: '/:userId',
+    element: <ChatWindow />
   },
   {
     path: '/profile',

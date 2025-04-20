@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { REHYDRATE } from 'redux-persist';
 
 const initialState = {
   authUser: null,
   otherUsers: [],
-  selectedUsers: null,
+  selectedUser: null,
   onlineUsers: []
 };
 
@@ -12,34 +11,40 @@ export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
+    // Set the authenticated user
     setAuthUser: (state, action) => {
       state.authUser = action.payload;
     },
+
+    // Set the list of other users
     setOtherUsers: (state, action) => {
       state.otherUsers = action.payload;
     },
-    setSelectedUsers: (state, action) => {
-      state.selectedUsers = action.payload;
+
+    // Set the currently selected user for chat
+    setSelectedUser: (state, action) => {
+      state.selectedUser = action.payload;
     },
+
+    // Set the list of online users
     setOnlineUsers: (state, action) => {
       state.onlineUsers = action.payload;
     },
+
+    // Handle logout
     logoutUser: state => {
       state.authUser = null;
       state.otherUsers = [];
-      state.selectedUsers = null;
+      state.selectedUser = null;
       state.onlineUsers = [];
       localStorage.removeItem('user');
     }
-  },
-  extraReducers: builder => {
-    builder.addCase(REHYDRATE, state => {
-      state.selectedUsers = null; // Reset selectedUsers on rehydration
-    });
   }
 });
 
-export const { setAuthUser, setOtherUsers, setSelectedUsers, setOnlineUsers, logoutUser } =
+// Export actions
+export const { setAuthUser, setOtherUsers, setSelectedUser, setOnlineUsers, logoutUser } =
   userSlice.actions;
 
+// Export reducer
 export default userSlice.reducer;

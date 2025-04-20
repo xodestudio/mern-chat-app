@@ -20,13 +20,14 @@ const Login = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // Load saved user from localStorage
     const savedUser = localStorage.getItem('user');
     if (savedUser) {
       const parsedUser = JSON.parse(savedUser);
-      setUser(parsedUser);
+      setUser(prev => (JSON.stringify(prev) === JSON.stringify(parsedUser) ? prev : parsedUser)); // Avoid redundant updates
       setRememberMe(true);
     }
-  }, []);
+  }, [navigate]);
 
   const togglePassword = useCallback(() => setShowPassword(prev => !prev), []);
   const handleChange = useCallback(e => {
@@ -63,7 +64,7 @@ const Login = () => {
       try {
         setLoading(true);
         const response = await axios.post(
-          'http://localhost:8000/api/v1/users/login',
+          `${import.meta.env.VITE_API_URL}/users/login`,
           { username, password },
           { withCredentials: true }
         );
@@ -77,7 +78,12 @@ const Login = () => {
         }
 
         dispatch(setAuthUser(response.data));
-        navigate('/');
+
+        if (response.status === 200) {
+          navigate('/');
+        } else {
+          console.error('Login failed');
+        }
       } catch (error) {
         console.error(error);
         showToast(error?.response?.data?.message || 'Something went wrong!', 'error');
